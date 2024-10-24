@@ -2,7 +2,9 @@
 // import { Plus } from '@components/Plus/Plus';
 import Navbar from '@components/Nav/Navbar/Navbar';
 import { Sidebar } from '@components/Sidebar/Sidebar';
+import RepositoryPage from '@pages/Repository/RepositoryPage';
 import { Outlet } from 'react-router-dom';
+import CodeEditor from '@components/CodeEditor/CodeEditor';
 
 const App = () => {
   return (
@@ -16,12 +18,20 @@ const App = () => {
     //     <ProjectCard />
     //   </div>
     // </div>
-    <div className="flex flex-row h-full w-full">
-      <Navbar></Navbar>
-      <Sidebar></Sidebar>
+    // <div className="flex flex-row h-full w-full">
+    //   <Navbar></Navbar>
+    //   <Sidebar></Sidebar>
+    //   <Outlet />
+    // </div>
 
-      <Outlet />
+    <div className="flex  flex-row h-full w-full">
+      <Navbar></Navbar>
+      <RepositoryPage></RepositoryPage>
     </div>
+
+    // <div className="flex  flex-row h-full w-full">
+    //   <CodeEditor></CodeEditor>
+    // </div>
   );
 };
 
