@@ -8,6 +8,8 @@ import Pagination from '@components/Pagination/Pagination';
 import { Link } from '@apis/Link';
 import { GitlabProject } from 'types/gitLab';
 import { Modal } from '@components/Modal/Modal';
+import { CommonButton } from '@components/Button/CommonButton';
+import { useNavigate } from 'react-router-dom';
 
 export default function RepositoryPage() {
   const [currentPage, setCurrentPage] = useAtom(currentPageAtom);
@@ -17,6 +19,7 @@ export default function RepositoryPage() {
   const [selectedRepo, setSelectedRepo] = useState<GitlabProject | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     setCurrentPage(1);
@@ -67,14 +70,28 @@ export default function RepositoryPage() {
     }
   };
 
+  const handleButtonClick = () => {
+    navigate('/main');
+  };
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedRepositories = repositories.slice(startIndex, endIndex);
 
   return (
     <div className="max-w-3xl ml-[80px] p-6">
-      <h1 className="text-3xl ml-[20px] font-bold mb-5">Repository</h1>
-      <h2 className="text-xl mb-3">내 프로젝트에서 리뷰할 프로젝트를 선택합니다.</h2>
+      <h1 className="text-3xl ml-[20px] font-bold mb-3">Repository</h1>
+      <div className="flex items-center justify-between w-[1000px]">
+        <h2 className="text-xl mb-3">내 프로젝트에서 리뷰할 프로젝트를 선택합니다.</h2>
+        <CommonButton
+          className="px-4 w-[100px] h-[50px]"
+          active={false}
+          onClick={handleButtonClick}
+        >
+          시작하기
+        </CommonButton>
+      </div>
+
       <RepositorySearchBar />
 
       <div className="bg-white w-[1000px]">
