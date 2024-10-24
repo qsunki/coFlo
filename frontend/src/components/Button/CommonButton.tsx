@@ -1,6 +1,6 @@
-export function Button({ active, icon, children, className }: BtnProps) {
-  const bgColor = active ? 'bg-[#ebecf0]' : 'bg-[#f4f5f7]';
-  const textColor = active ? 'text-[#2a52ce]' : 'text-[#293d68]';
+export function CommonButton({ active, icon, children, className }: BtnProps) {
+  const bgColor = active ? 'bg-[#2C365B]' : 'bg-[#2C365B]';
+  const textColor = active ? 'text-[#707A9F]' : 'text-[FFFFFF]';
 
   return (
     <div
