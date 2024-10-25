@@ -1,13 +1,16 @@
+import { useAtomValue } from 'jotai';
 import { useAtom } from 'jotai';
-import { currentPageAtom, totalPagesAtom, updatePagination } from '@store/pagination';
+import { currentPageAtom, totalPagesAtom } from '@store/pagination';
+
 import { LeftArrow } from './icons/LeftArrow';
 import { RightArrow } from './icons/RightArrow';
 
 const Pagination = () => {
   const [currentPage, setCurrentPage] = useAtom(currentPageAtom);
-  const [totalPages, setTotalPages] = useAtom(totalPagesAtom);
+  const totalPages = useAtomValue(totalPagesAtom);
   const totalDisplayedPages = 10;
 
+  console.log('currentPage:', currentPage, 'totalPages:', totalPages);
   if (typeof currentPage !== 'number' || typeof totalPages !== 'number') {
     console.error('currentPage 또는 totalPages가 숫자가 아닙니다:', { currentPage, totalPages });
     return <div></div>;
@@ -18,7 +21,6 @@ const Pagination = () => {
       return;
     }
     setCurrentPage(page);
-    updatePagination(setTotalPages, totalPages, page);
   };
 
   const getPaginationItems = () => {
