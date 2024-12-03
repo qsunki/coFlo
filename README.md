@@ -3,7 +3,8 @@
     <img src="./resources/img/logo.png" width="22px" style="margin-right: 15px"/> 코플로, CoFlo
   </h1>
   <img src="./resources/img/main.png"/>
-  <h3>AI 기반 맞춤형 코드 리뷰 플랫폼</h3>
+  <h3>🏆 SSAFY 11기 자율 프로젝트 우수상 수상 🏆</h3>
+  <h4>AI 기반 맞춤형 코드 리뷰 플랫폼</h4>
   <p>2024.10.14 ~ 2024.11.19</p>  
     
   <a href="https://www.coflo.co.kr/">코플로</a>
