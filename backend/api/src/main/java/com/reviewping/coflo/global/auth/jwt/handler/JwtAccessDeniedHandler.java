@@ -18,16 +18,13 @@ import org.springframework.stereotype.Component;
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            AccessDeniedException accessDeniedException)
+            HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException)
             throws IOException {
         // 필요한 권한 없이 접근하려 할때 403 리턴
         setErrorResponse(request, response, accessDeniedException);
     }
 
-    private void setErrorResponse(
-            HttpServletRequest request, HttpServletResponse response, Throwable ex) {
+    private void setErrorResponse(HttpServletRequest request, HttpServletResponse response, Throwable ex) {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
@@ -35,9 +32,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             response.getWriter()
-                    .write(
-                            objectMapper.writeValueAsString(
-                                    ApiErrorResponse.error(USER_AUTHORIZATION_NOT_EXIST)));
+                    .write(objectMapper.writeValueAsString(ApiErrorResponse.error(USER_AUTHORIZATION_NOT_EXIST)));
         } catch (IOException e) {
             e.printStackTrace();
         }

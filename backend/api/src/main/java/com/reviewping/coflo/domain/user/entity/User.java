@@ -50,12 +50,7 @@ public class User extends BaseTimeEntity {
     private BadgeCode mainBadgeCode;
 
     @Builder
-    public User(
-            String username,
-            String profileImageUrl,
-            String oauth2Id,
-            Provider provider,
-            Role role) {
+    public User(String username, String profileImageUrl, String oauth2Id, Provider provider, Role role) {
         this.username = username;
         this.profileImageUrl = profileImageUrl;
         this.oauth2Id = oauth2Id;

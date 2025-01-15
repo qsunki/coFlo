@@ -39,10 +39,9 @@ public class MattermostAppender extends AppenderBase<ILoggingEvent> {
         }
 
         // encoder를 사용해 포맷팅된 메시지 생성
-        String formattedMessage =
-                this.encoder != null
-                        ? this.encoder.getLayout().doLayout(eventObject)
-                        : eventObject.getFormattedMessage();
+        String formattedMessage = this.encoder != null
+                ? this.encoder.getLayout().doLayout(eventObject)
+                : eventObject.getFormattedMessage();
 
         Map<String, String> payload = new HashMap<>();
         payload.put("text", formattedMessage);

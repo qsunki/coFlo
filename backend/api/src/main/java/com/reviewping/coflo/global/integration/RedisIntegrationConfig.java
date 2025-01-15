@@ -55,8 +55,7 @@ public class RedisIntegrationConfig {
     public RedisInboundChannelAdapter redisInboundChannelAdapter(
             @Qualifier("redisInboundChannel") MessageChannel redisInboundChannel) {
         RedisInboundChannelAdapter adapter = new RedisInboundChannelAdapter(redisConnectionFactory);
-        adapter.setTopics(
-                "test", "init", "review-response", "mr-eval-response", "detailed-review-response");
+        adapter.setTopics("test", "init", "review-response", "mr-eval-response", "detailed-review-response");
         adapter.setOutputChannel(redisInboundChannel);
         return adapter;
     }
@@ -64,13 +63,11 @@ public class RedisIntegrationConfig {
     @Bean
     @ServiceActivator(inputChannel = "redisOutboundChannel")
     public MessageHandler redisOutboundAdapter() {
-        RedisPublishingMessageHandler handler =
-                new RedisPublishingMessageHandler(redisConnectionFactory);
+        RedisPublishingMessageHandler handler = new RedisPublishingMessageHandler(redisConnectionFactory);
         SpelExpressionParser parser = new SpelExpressionParser();
         Expression topicExpression = parser.parseExpression("headers['topic']");
         handler.setTopicExpression(topicExpression);
-        Jackson2JsonRedisSerializer<Object> serializer =
-                new Jackson2JsonRedisSerializer<>(Object.class);
+        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
         handler.setSerializer(serializer);
         return handler;
     }

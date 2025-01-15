@@ -33,16 +33,14 @@ public class ProjectController {
     @Operation(summary = "프로젝트 상세 정보 조회")
     public ApiResponse<ProjectTeamDetailResponse> getProjectInfoDetail(
             @AuthUser User user, @PathVariable("projectId") Long projectId) {
-        return ApiSuccessResponse.success(
-                projectTeamStatisticsService.getTeamDetail(user, projectId));
+        return ApiSuccessResponse.success(projectTeamStatisticsService.getTeamDetail(user, projectId));
     }
 
     @GetMapping("/{projectId}/scores")
     @Operation(summary = "주간 6항목 점수 데이터 조회", description = "점수 총합 상위 5명에 대한 6항목 점수 데이터")
     public ApiResponse<ProjectTeamRewardResponse> getProjectTeamScore(
             @AuthUser User user, @PathVariable("projectId") Long projectId) {
-        return ApiSuccessResponse.success(
-                projectTeamStatisticsService.getTeamScore(user.getId(), projectId));
+        return ApiSuccessResponse.success(projectTeamStatisticsService.getTeamScore(user.getId(), projectId));
     }
 
     @GetMapping("/{projectId}/statistics")
@@ -53,14 +51,12 @@ public class ProjectController {
             @RequestParam(name = "calculationType") CalculationType calculationType,
             @RequestParam(name = "scoreDisplayType") ScoreDisplayType scoreDisplayType,
             @RequestParam(name = "period", required = false, defaultValue = "7") Integer period) {
-        return ApiSuccessResponse.success(
-                projectUserStatisticsService.calculateScore(
-                        user, projectId, period, calculationType, scoreDisplayType));
+        return ApiSuccessResponse.success(projectUserStatisticsService.calculateScore(
+                user, projectId, period, calculationType, scoreDisplayType));
     }
 
     @GetMapping("/{projectId}/labels")
-    public ApiResponse<ProjectLabelResponse> getProjectLabels(
-            @AuthUser User user, @PathVariable Long projectId) {
+    public ApiResponse<ProjectLabelResponse> getProjectLabels(@AuthUser User user, @PathVariable Long projectId) {
         ProjectLabelResponse labels = projectService.getProjectLabels(user.getId(), projectId);
         return ApiSuccessResponse.success(labels);
     }

@@ -13,21 +13,19 @@ public interface UserProjectScoreRepository
 
     List<UserProjectScore> findAllByUserProjectAndWeek(UserProject userProject, int week);
 
-    @Query(
-            "SELECT ups FROM UserProjectScore ups "
-                    + "WHERE ups.userProject.id = :userProjectId "
-                    + "AND ups.week BETWEEN :startWeek AND :endWeek "
-                    + "ORDER BY ups.week ASC")
+    @Query("SELECT ups FROM UserProjectScore ups "
+            + "WHERE ups.userProject.id = :userProjectId "
+            + "AND ups.week BETWEEN :startWeek AND :endWeek "
+            + "ORDER BY ups.week ASC")
     List<UserProjectScore> findByUserProjectIdAndWeekRange(
             @Param("userProjectId") Long userProjectId,
             @Param("startWeek") int startWeek,
             @Param("endWeek") int endWeek);
 
-    @Query(
-            "SELECT ups FROM UserProjectScore ups "
-                    + "WHERE ups.userProject = :userProject "
-                    + "AND ups.week = :week "
-                    + "AND ups.codeQualityCode.id = :codeQualityCodeId")
+    @Query("SELECT ups FROM UserProjectScore ups "
+            + "WHERE ups.userProject = :userProject "
+            + "AND ups.week = :week "
+            + "AND ups.codeQualityCode.id = :codeQualityCodeId")
     Optional<UserProjectScore> findScoreByProjectWeekAndCode(
             @Param("userProject") UserProject userProject,
             @Param("week") int week,

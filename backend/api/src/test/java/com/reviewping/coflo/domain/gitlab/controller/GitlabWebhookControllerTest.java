@@ -32,13 +32,20 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 class GitlabWebhookControllerTest {
 
     private WebTestClient webTestClient;
-    @LocalServerPort private int port;
-    @Autowired private ObjectMapper objectMapper;
-    @MockBean private GitLabClient gitLabClient;
+
+    @LocalServerPort
+    private int port;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
+    private GitLabClient gitLabClient;
 
     @BeforeEach
     void setUp() {
-        webTestClient = WebTestClient.bindToServer().baseUrl("http://localhost:" + port).build();
+        webTestClient =
+                WebTestClient.bindToServer().baseUrl("http://localhost:" + port).build();
         GitlabMrDiffsContent gitlabMrDiffsContent = GitlabMrDiffsContentFixture.createMock();
         given(gitLabClient.getMrDiffs("gitlab.example.com", "test-token", 1L, 1L))
                 .willReturn(List.of(gitlabMrDiffsContent));
@@ -46,8 +53,7 @@ class GitlabWebhookControllerTest {
 
     @Test
     @DisplayName("올바른 Gitlab webhokk 요청")
-    void givenValidMergeRequestHook_whenHandleGitlabEvent_thenReturnsSuccessResponse()
-            throws JsonProcessingException {
+    void givenValidMergeRequestHook_whenHandleGitlabEvent_thenReturnsSuccessResponse() throws JsonProcessingException {
         // given
         GitlabEventRequest gitlabEventRequest = GitlabEventRequestFixture.createOpenActionRequest();
         String requestBody = objectMapper.writeValueAsString(gitlabEventRequest);
@@ -65,12 +71,11 @@ class GitlabWebhookControllerTest {
                 .expectStatus()
                 .isOk()
                 .expectBody(ApiResponse.class)
-                .consumeWith(
-                        response -> {
-                            ApiResponse<?> apiResponse = response.getResponseBody();
-                            assertNotNull(apiResponse);
-                            assertEquals(apiResponse.getStatus(), ResponseStatus.SUCCESS);
-                        });
+                .consumeWith(response -> {
+                    ApiResponse<?> apiResponse = response.getResponseBody();
+                    assertNotNull(apiResponse);
+                    assertEquals(apiResponse.getStatus(), ResponseStatus.SUCCESS);
+                });
     }
 
     @Test
@@ -91,12 +96,11 @@ class GitlabWebhookControllerTest {
                 .expectStatus()
                 .isNotFound()
                 .expectBody(ApiResponse.class)
-                .consumeWith(
-                        response -> {
-                            ApiResponse<?> apiResponse = response.getResponseBody();
-                            assertNotNull(apiResponse);
-                            assertEquals(apiResponse.getStatus(), ResponseStatus.ERROR);
-                        });
+                .consumeWith(response -> {
+                    ApiResponse<?> apiResponse = response.getResponseBody();
+                    assertNotNull(apiResponse);
+                    assertEquals(apiResponse.getStatus(), ResponseStatus.ERROR);
+                });
     }
 
     @Test
@@ -117,11 +121,10 @@ class GitlabWebhookControllerTest {
                 .expectStatus()
                 .is5xxServerError()
                 .expectBody(ApiResponse.class)
-                .consumeWith(
-                        response -> {
-                            ApiResponse<?> apiResponse = response.getResponseBody();
-                            assertNotNull(apiResponse);
-                            assertEquals(apiResponse.getStatus(), ResponseStatus.ERROR);
-                        });
+                .consumeWith(response -> {
+                    ApiResponse<?> apiResponse = response.getResponseBody();
+                    assertNotNull(apiResponse);
+                    assertEquals(apiResponse.getStatus(), ResponseStatus.ERROR);
+                });
     }
 }

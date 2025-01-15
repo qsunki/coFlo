@@ -21,11 +21,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class GitlabEventHandlerTest {
 
-    @Mock private ReviewService reviewService;
+    @Mock
+    private ReviewService reviewService;
 
-    @Mock private ProjectRepository projectRepository;
+    @Mock
+    private ProjectRepository projectRepository;
 
-    @InjectMocks private GitlabEventHandler gitlabEventHandler;
+    @InjectMocks
+    private GitlabEventHandler gitlabEventHandler;
 
     @BeforeEach
     void setUp() {
@@ -61,13 +64,11 @@ class GitlabEventHandlerTest {
     @Test
     void handleMergeRequestUnsupportedActionShouldThrowBusinessException() {
         // given
-        GitlabEventRequest unsupportedActionRequest =
-                GitlabEventRequestFixture.createUnsupportedActionRequest();
+        GitlabEventRequest unsupportedActionRequest = GitlabEventRequestFixture.createUnsupportedActionRequest();
 
         // when & then
         assertThrows(
-                BusinessException.class,
-                () -> gitlabEventHandler.handleMergeRequest(1L, unsupportedActionRequest));
+                BusinessException.class, () -> gitlabEventHandler.handleMergeRequest(1L, unsupportedActionRequest));
     }
 
     @Test
@@ -76,8 +77,6 @@ class GitlabEventHandlerTest {
         GitlabEventRequest invalidUrlRequest = GitlabEventRequestFixture.createInvalidUrlRequest();
 
         // when & then
-        assertThrows(
-                BusinessException.class,
-                () -> gitlabEventHandler.handleMergeRequest(1L, invalidUrlRequest));
+        assertThrows(BusinessException.class, () -> gitlabEventHandler.handleMergeRequest(1L, invalidUrlRequest));
     }
 }

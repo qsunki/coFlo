@@ -26,8 +26,7 @@ public class WebhookChannelController {
 
     @PostMapping
     @Operation(summary = "웹훅 채널 신규 등록")
-    public ApiResponse<Void> addWebhookChannel(
-            @Valid @RequestBody WebhookChannelRequest webhookChannelRequest) {
+    public ApiResponse<Void> addWebhookChannel(@Valid @RequestBody WebhookChannelRequest webhookChannelRequest) {
         webhookChannelService.addWebhookChannel(
                 webhookChannelRequest.projectId(),
                 webhookChannelRequest.channelCodeId(),
@@ -38,15 +37,13 @@ public class WebhookChannelController {
 
     @GetMapping("/{projectId}")
     @Operation(summary = "등록된 웹훅 채널 목록 조회")
-    public ApiResponse<List<WebhookChannelResponse>> getWebhookChannelList(
-            @PathVariable("projectId") Long projectId) {
+    public ApiResponse<List<WebhookChannelResponse>> getWebhookChannelList(@PathVariable("projectId") Long projectId) {
         return ApiSuccessResponse.success(webhookChannelService.getWebhookChannelList(projectId));
     }
 
     @PostMapping("/test")
     @Operation(summary = "웹훅 연동 테스트")
-    public ApiResponse<Void> testWebhookChannel(
-            @RequestBody ChannelTestDataRequest channelTestDataRequest) {
+    public ApiResponse<Void> testWebhookChannel(@RequestBody ChannelTestDataRequest channelTestDataRequest) {
         webhookChannelService.sendData(channelTestDataRequest.projectId(), TEST_CONTENT);
         return ApiSuccessResponse.success();
     }
@@ -56,15 +53,13 @@ public class WebhookChannelController {
     public ApiResponse<Void> updateWebhookChannel(
             @PathVariable("webhookChannelId") Long webhookChannelId,
             @Valid @RequestBody UpdateWebhookChannelRequest updateWebhookChannelRequest) {
-        webhookChannelService.updateWebhookChannel(
-                webhookChannelId, updateWebhookChannelRequest.webhookUrl());
+        webhookChannelService.updateWebhookChannel(webhookChannelId, updateWebhookChannelRequest.webhookUrl());
         return ApiSuccessResponse.success();
     }
 
     @DeleteMapping("/{webhookChannelId}")
     @Operation(summary = "연동된 웹훅 연동 해제")
-    public ApiResponse<Void> deleteWebhookChannel(
-            @PathVariable("webhookChannelId") Long webhookChannelId) {
+    public ApiResponse<Void> deleteWebhookChannel(@PathVariable("webhookChannelId") Long webhookChannelId) {
         webhookChannelService.deleteWebhookChannel(webhookChannelId);
         return ApiSuccessResponse.success();
     }

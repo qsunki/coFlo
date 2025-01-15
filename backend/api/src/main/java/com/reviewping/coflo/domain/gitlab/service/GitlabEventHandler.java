@@ -33,13 +33,7 @@ public class GitlabEventHandler {
     private final RedisGateway redisGateway;
     private final BranchRepository branchRepository;
     private final Map<String, BiConsumer<Long, GitlabEventRequest>> handlers =
-            Map.of(
-                    "open",
-                    this::handleOpen,
-                    "reopen",
-                    this::handleOpen,
-                    "merge",
-                    this::handleMerge);
+            Map.of("open", this::handleOpen, "reopen", this::handleOpen, "merge", this::handleMerge);
 
     @Async
     public void handleMergeRequest(Long projectId, GitlabEventRequest gitlabEventRequest) {
@@ -48,11 +42,9 @@ public class GitlabEventHandler {
                 gitlabEventRequest.eventType(),
                 gitlabEventRequest.objectAttributes().action());
         log.debug("gitlabEventRequest: {}", gitlabEventRequest);
-        handlers.getOrDefault(
-                        gitlabEventRequest.objectAttributes().action(),
-                        (id, request) -> {
-                            throw new BusinessException(ErrorCode.UNSUPPORTED_WEBHOOK_ACTION);
-                        })
+        handlers.getOrDefault(gitlabEventRequest.objectAttributes().action(), (id, request) -> {
+                    throw new BusinessException(ErrorCode.UNSUPPORTED_WEBHOOK_ACTION);
+                })
                 .accept(projectId, gitlabEventRequest);
     }
 
@@ -89,14 +81,8 @@ public class GitlabEventHandler {
         Project project = projectRepository.getById(projectId);
         String branchName = gitlabEventRequest.objectAttributes().targetBranch();
         Branch branch = branchRepository.getByNameAndProject(branchName, project);
-        UpdateRequestMessage updateRequest =
-                new UpdateRequestMessage(
-                        project.getId(),
-                        branch.getId(),
-                        project.getGitUrl(),
-                        branch.getName(),
-                        project.getBotToken(),
-                        "");
+        UpdateRequestMessage updateRequest = new UpdateRequestMessage(
+                project.getId(), branch.getId(), project.getGitUrl(), branch.getName(), project.getBotToken(), "");
         redisGateway.sendUpdateRequest(updateRequest);
     }
 

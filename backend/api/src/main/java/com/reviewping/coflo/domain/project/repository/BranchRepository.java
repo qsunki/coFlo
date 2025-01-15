@@ -11,7 +11,6 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
     Optional<Branch> findByNameAndProject(String name, Project project);
 
     default Branch getByNameAndProject(String name, Project project) {
-        return findByNameAndProject(name, project)
-                .orElseThrow(() -> new BusinessException(ErrorCode.BRANCH_NOT_FOUND));
+        return findByNameAndProject(name, project).orElseThrow(() -> new BusinessException(ErrorCode.BRANCH_NOT_FOUND));
     }
 }

@@ -25,14 +25,11 @@ public enum ErrorCode {
      * GITLAB(C000)
      */
     USER_GITLAB_ACCOUNT_NOT_EXIST(HttpStatus.NOT_FOUND, "C001", "사용자의 깃랩 계정이 존재하지 않습니다."),
-    GITLAB_REQUEST_SERIALIZATION_ERROR(
-            HttpStatus.INTERNAL_SERVER_ERROR, "C002", "GITLAB 요청 생성에 오류가 발생했습니다."),
+    GITLAB_REQUEST_SERIALIZATION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "C002", "GITLAB 요청 생성에 오류가 발생했습니다."),
     UNSUPPORTED_WEBHOOK_ACTION(HttpStatus.NOT_FOUND, "C003", "지원하지 않는 MR 웹훅 요청입니다."),
     UNSUPPORTED_EVENT_TYPE(HttpStatus.NOT_FOUND, "C004", "지원하지 않는 웹훅 이벤트입니다."),
-    GITLAB_URL_PARSE_ERROR(
-            HttpStatus.INTERNAL_SERVER_ERROR, "C005", "웹훅 REQUEST에서 URL 파싱 중 에러가 발생했습니다."),
-    GITLAB_EVENT_REQUEST_SERIALIZATION_ERROR(
-            HttpStatus.INTERNAL_SERVER_ERROR, "C006", "웹훅 REQUEST 역직렬화 중 에러가 발생했습니다."),
+    GITLAB_URL_PARSE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "C005", "웹훅 REQUEST에서 URL 파싱 중 에러가 발생했습니다."),
+    GITLAB_EVENT_REQUEST_SERIALIZATION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "C006", "웹훅 REQUEST 역직렬화 중 에러가 발생했습니다."),
     /**
      * REVIEW(D000)
      */
@@ -63,12 +60,9 @@ public enum ErrorCode {
      * PROJECT(H000)
      */
     PROJECT_NOT_EXIST(HttpStatus.NOT_FOUND, "H001", "존재하지 않는 프로젝트입니다."),
-    PROJECT_CALCULATION_TYPE_NOT_EXIST(
-            HttpStatus.BAD_REQUEST, "H002", "잘못된 CalculationType 파라미터 값입니다."),
-    PROJECT_SCORE_DISPLAY_TYPE_NOT_EXIST(
-            HttpStatus.BAD_REQUEST, "H003", "잘못된 ScoreDisplayType 파라미터 값입니다."),
-    PROJECT_STATISTICS_TYPE_NOT_EXIST(
-            HttpStatus.BAD_REQUEST, "H004", "Statistics Type이 존재하지 않습니다."),
+    PROJECT_CALCULATION_TYPE_NOT_EXIST(HttpStatus.BAD_REQUEST, "H002", "잘못된 CalculationType 파라미터 값입니다."),
+    PROJECT_SCORE_DISPLAY_TYPE_NOT_EXIST(HttpStatus.BAD_REQUEST, "H003", "잘못된 ScoreDisplayType 파라미터 값입니다."),
+    PROJECT_STATISTICS_TYPE_NOT_EXIST(HttpStatus.BAD_REQUEST, "H004", "Statistics Type이 존재하지 않습니다."),
 
     /**
      * USER PROJECT(I000)
@@ -80,8 +74,7 @@ public enum ErrorCode {
      * WEBHOOK CHANNEL(J000)
      */
     CHANNEL_CODE_NOT_EXIST(HttpStatus.NOT_FOUND, "J001", "존재하지 않는 채널 코드입니다."),
-    WEBHOOK_REQUEST_SERIALIZATION_ERROR(
-            HttpStatus.INTERNAL_SERVER_ERROR, "J002", "Webhook Content 요청 생성에 오류가 발생했습니다."),
+    WEBHOOK_REQUEST_SERIALIZATION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "J002", "Webhook Content 요청 생성에 오류가 발생했습니다."),
     WEBHOOK_CHANNEL_NOT_EXIST(HttpStatus.NOT_FOUND, "J003", "존재하지 않는 웹훅 채널입니다."),
 
     /**
@@ -103,10 +96,8 @@ public enum ErrorCode {
     /**
      * SSE(N000)
      */
-    SSE_DATA_SEND_ERROR(
-            HttpStatus.INTERNAL_SERVER_ERROR, "N001", "SSE 데이터를 클라이언트로 전송 도중 오류가 발생했습니다."),
-    SSE_DATA_SERIALIZATION_ERROR(
-            HttpStatus.INTERNAL_SERVER_ERROR, "N002", "SSE 데이터를 직렬화 도중 에러가 발생했습니다."),
+    SSE_DATA_SEND_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "N001", "SSE 데이터를 클라이언트로 전송 도중 오류가 발생했습니다."),
+    SSE_DATA_SERIALIZATION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "N002", "SSE 데이터를 직렬화 도중 에러가 발생했습니다."),
 
     /**
      * NOTIFICATION(O000)
@@ -117,13 +108,10 @@ public enum ErrorCode {
      * EXTERNAL API(Y000)
      */
     EXTERNAL_API_NOT_FOUND(HttpStatus.NOT_FOUND, "Y001", "외부 API를 찾을 수 없습니다."),
-    EXTERNAL_API_METHOD_NOT_ALLOWED(
-            HttpStatus.METHOD_NOT_ALLOWED, "Y002", "외부 API 요청에 허용되지 않은 HTTP 메서드입니다."),
-    EXTERNAL_API_UNSUPPORTED_MEDIA_TYPE(
-            HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Y003", "외부 API 요청에 지원되지 않는 미디어 타입입니다."),
+    EXTERNAL_API_METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "Y002", "외부 API 요청에 허용되지 않은 HTTP 메서드입니다."),
+    EXTERNAL_API_UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Y003", "외부 API 요청에 지원되지 않는 미디어 타입입니다."),
     EXTERNAL_API_BAD_REQUEST(HttpStatus.INTERNAL_SERVER_ERROR, "Y004", "잘못된 외부 API 요청입니다."),
-    EXTERNAL_API_INTERNAL_SERVER_ERROR(
-            HttpStatus.INTERNAL_SERVER_ERROR, "Y005", "외부 API 서버 내부 오류가 발생했습니다."),
+    EXTERNAL_API_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Y005", "외부 API 서버 내부 오류가 발생했습니다."),
     EXTERNAL_API_UNAUTHORIZED(HttpStatus.BAD_REQUEST, "Y006", "외부 API 토큰이 유효하지 않습니다."),
     EXTERNAL_API_COMMUNICATION(HttpStatus.SERVICE_UNAVAILABLE, "Y007", "외부 API와의 통신 중 오류가 발생했습니다."),
     EXTERNAL_API_TIMEOUT(HttpStatus.GATEWAY_TIMEOUT, "Y008", "외부 API 요청이 시간 초과되었습니다."),

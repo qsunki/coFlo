@@ -23,8 +23,7 @@ public class CustomPromptController {
 
     @GetMapping("/{projectId}")
     @Operation(summary = "연동된 프로젝트의 Custom Prompt 조회")
-    public ApiResponse<CustomPromptResponse> getCustomPrompt(
-            @PathVariable("projectId") Long projectId) {
+    public ApiResponse<CustomPromptResponse> getCustomPrompt(@PathVariable("projectId") Long projectId) {
         return ApiSuccessResponse.success(customPromptService.getCustomPrompt(projectId));
     }
 

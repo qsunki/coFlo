@@ -35,13 +35,12 @@ public class NotificationService {
     public void create(Long userId, UserProject userProject, String content) {
         sseService.notify(userId, content);
 
-        Notification notification =
-                Notification.builder()
-                        .userProject(userProject)
-                        .content(content)
-                        .targetUrl(null)
-                        .isRead(false)
-                        .build();
+        Notification notification = Notification.builder()
+                .userProject(userProject)
+                .content(content)
+                .targetUrl(null)
+                .isRead(false)
+                .build();
         notificationRepository.save(notification);
     }
 
@@ -52,13 +51,10 @@ public class NotificationService {
                 notificationRepository.findAllByUserProjectOrderByCreatedDateDesc(userProject);
 
         return notifications.stream()
-                .map(
-                        notification -> {
-                            return NotificationResponse.from(
-                                    notification,
-                                    formatCreatedDate(
-                                            notification.getCreatedDate(), LocalDateTime.now()));
-                        })
+                .map(notification -> {
+                    return NotificationResponse.from(
+                            notification, formatCreatedDate(notification.getCreatedDate(), LocalDateTime.now()));
+                })
                 .toList();
     }
 
@@ -73,18 +69,18 @@ public class NotificationService {
 
         List<Notification> notifications =
                 notificationRepository.findAllByUserProjectOrderByCreatedDateDesc(userProject);
-        return UnreadCountResponse.of(
-                notifications.stream().filter(notification -> !notification.isRead()).count());
+        return UnreadCountResponse.of(notifications.stream()
+                .filter(notification -> !notification.isRead())
+                .count());
     }
 
     public UserProject getUserProject(Long userId, Long projectId) {
         User user = userRepository.getById(userId);
         GitlabAccount gitlabAccount = user.getGitlabAccounts().getFirst();
         Project project = projectRepository.getById(projectId);
-        UserProject userProject =
-                userProjectRepository
-                        .findByProjectAndGitlabAccount(project, gitlabAccount)
-                        .orElseThrow(() -> new BusinessException(ErrorCode.USER_PROJECT_NOT_EXIST));
+        UserProject userProject = userProjectRepository
+                .findByProjectAndGitlabAccount(project, gitlabAccount)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_PROJECT_NOT_EXIST));
         return userProject;
     }
 

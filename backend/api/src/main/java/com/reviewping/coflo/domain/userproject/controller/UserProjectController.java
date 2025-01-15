@@ -29,8 +29,7 @@ public class UserProjectController {
             @AuthUser User user,
             @PathVariable("gitlabProjectId") Long gitlabProjectId,
             @RequestBody(required = false) ProjectLinkRequest projectLinkRequest) {
-        Long projectId =
-                userProjectService.linkGitlabProject(user, gitlabProjectId, projectLinkRequest);
+        Long projectId = userProjectService.linkGitlabProject(user, gitlabProjectId, projectLinkRequest);
         return ApiSuccessResponse.success("projectId", projectId);
     }
 
@@ -51,10 +50,8 @@ public class UserProjectController {
     @GetMapping
     @Operation(summary = "사용자의 연동된 프로젝트 리스트 조회")
     public ApiResponse<List<UserProjectResponse>> getUserProjects(
-            @AuthUser User user,
-            @RequestParam(name = "currentProjectId", defaultValue = "-1") Long currentProjectId) {
-        List<UserProjectResponse> userProjects =
-                userProjectService.getUserProjects(user, currentProjectId);
+            @AuthUser User user, @RequestParam(name = "currentProjectId", defaultValue = "-1") Long currentProjectId) {
+        List<UserProjectResponse> userProjects = userProjectService.getUserProjects(user, currentProjectId);
         return ApiSuccessResponse.success(userProjects);
     }
 }

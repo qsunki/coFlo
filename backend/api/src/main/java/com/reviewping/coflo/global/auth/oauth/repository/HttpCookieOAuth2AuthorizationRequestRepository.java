@@ -30,9 +30,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository
 
     @Override
     public void saveAuthorizationRequest(
-            OAuth2AuthorizationRequest authorizationRequest,
-            HttpServletRequest request,
-            HttpServletResponse response) {
+            OAuth2AuthorizationRequest authorizationRequest, HttpServletRequest request, HttpServletResponse response) {
         if (authorizationRequest == null) {
             cookieUtil.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
             cookieUtil.deleteCookie(request, response, REDIRECT_URL_PARAM_COOKIE_NAME);
@@ -45,11 +43,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository
                 cookieExpireSeconds);
         String redirectUrlAfterLogin = request.getParameter(REDIRECT_URL_PARAM_COOKIE_NAME);
         if (StringUtils.isNotBlank(redirectUrlAfterLogin)) {
-            cookieUtil.setCookie(
-                    response,
-                    REDIRECT_URL_PARAM_COOKIE_NAME,
-                    redirectUrlAfterLogin,
-                    cookieExpireSeconds);
+            cookieUtil.setCookie(response, REDIRECT_URL_PARAM_COOKIE_NAME, redirectUrlAfterLogin, cookieExpireSeconds);
         }
     }
 

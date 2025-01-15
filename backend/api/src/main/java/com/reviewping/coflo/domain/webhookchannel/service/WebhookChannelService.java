@@ -44,12 +44,11 @@ public class WebhookChannelService {
         Project project = projectRepository.getById(projectId);
         ChannelCode channelCode = channelCodeRepository.findChannelCodeById(channelCodeId);
 
-        WebhookChannel webhookChannel =
-                WebhookChannel.builder()
-                        .project(project)
-                        .channelCode(channelCode)
-                        .webhookUrl(webhookUrl)
-                        .build();
+        WebhookChannel webhookChannel = WebhookChannel.builder()
+                .project(project)
+                .channelCode(channelCode)
+                .webhookUrl(webhookUrl)
+                .build();
 
         webhookChannelRepository.save(webhookChannel);
     }
@@ -65,10 +64,9 @@ public class WebhookChannelService {
         Project project = projectRepository.getById(projectId);
         List<WebhookChannel> webhookChannels = project.getWebhookChannels();
 
-        webhookChannels.forEach(
-                webhookChannel -> {
-                    send(webhookChannel.getWebhookUrl(), content, webhookChannel.getChannelCode());
-                });
+        webhookChannels.forEach(webhookChannel -> {
+            send(webhookChannel.getWebhookUrl(), content, webhookChannel.getChannelCode());
+        });
     }
 
     @Transactional
@@ -99,8 +97,7 @@ public class WebhookChannelService {
             throw new BusinessException(WEBHOOK_REQUEST_SERIALIZATION_ERROR, e);
         }
 
-        restTemplateUtil.sendPostRequest(
-                url, headers, body, new ParameterizedTypeReference<String>() {});
+        restTemplateUtil.sendPostRequest(url, headers, body, new ParameterizedTypeReference<String>() {});
     }
 
     private static WebhookContent getWebhookContent(String content, ChannelType channelType) {

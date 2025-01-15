@@ -13,19 +13,17 @@ public class PromptTemplateRepository {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public PromptTemplate findLatestTemplate(String type) {
-        String sql =
-                "SELECT content, type, created_date FROM prompt_template WHERE type = :type ORDER"
-                        + " BY created_date DESC LIMIT 1";
+        String sql = "SELECT content, type, created_date FROM prompt_template WHERE type = :type ORDER"
+                + " BY created_date DESC LIMIT 1";
 
         MapSqlParameterSource params = new MapSqlParameterSource().addValue("type", type);
 
         return namedParameterJdbcTemplate.queryForObject(
                 sql,
                 params,
-                (rs, rowNum) ->
-                        new PromptTemplate(
-                                rs.getString("content"),
-                                rs.getString("type"),
-                                rs.getTimestamp("created_date").toLocalDateTime()));
+                (rs, rowNum) -> new PromptTemplate(
+                        rs.getString("content"),
+                        rs.getString("type"),
+                        rs.getTimestamp("created_date").toLocalDateTime()));
     }
 }

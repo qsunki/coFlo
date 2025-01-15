@@ -26,8 +26,7 @@ public class UserController {
     @Operation(summary = "현재 로그인 된 사용자의 연동된 Gitlab 정보 확인")
     public ApiResponse<Void> addGitlabAccount(
             @AuthUser User user, @Valid @RequestBody GitlabAccountRequest gitlabAccountRequest) {
-        userService.addGitlabAccount(
-                gitlabAccountRequest.domain(), gitlabAccountRequest.userToken(), user.getId());
+        userService.addGitlabAccount(gitlabAccountRequest.domain(), gitlabAccountRequest.userToken(), user.getId());
         return ApiSuccessResponse.success();
     }
 
@@ -40,16 +39,14 @@ public class UserController {
 
     @PatchMapping("/recent-project/{projectId}")
     @Operation(summary = "최근 조회한 프로젝트 식별자", description = "GitlabAccount의 recentProjectId 변경")
-    public ApiResponse<Void> updateRecentProject(
-            @AuthUser User user, @PathVariable Long projectId) {
+    public ApiResponse<Void> updateRecentProject(@AuthUser User user, @PathVariable Long projectId) {
         userService.updateRecentProjectId(user.getId(), projectId);
         return ApiSuccessResponse.success();
     }
 
     @PostMapping("/logout")
     @Operation(summary = "로그아웃", description = "사용자 쿠키 만료, redis에 저장된 refresh-token 삭제")
-    public ApiResponse<Void> logout(
-            @AuthUser User user, HttpServletRequest request, HttpServletResponse response) {
+    public ApiResponse<Void> logout(@AuthUser User user, HttpServletRequest request, HttpServletResponse response) {
         userService.logout(request, response, user.getId());
         return ApiSuccessResponse.success();
     }

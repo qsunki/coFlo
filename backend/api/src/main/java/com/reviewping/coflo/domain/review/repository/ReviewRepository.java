@@ -13,7 +13,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Review findFirstByMrInfoOrderByCreatedDateAsc(MrInfo mrInfo);
 
     default Review getById(Long reviewId) {
-        return findById(reviewId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.REVIEW_NOT_FOUND));
+        return findById(reviewId).orElseThrow(() -> new BusinessException(ErrorCode.REVIEW_NOT_FOUND));
     }
 }

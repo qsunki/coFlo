@@ -69,9 +69,7 @@ subprojects {
         }
         java {
             targetExclude 'src/main/generated/**/*.java' // generated 디렉토리 제외
-            removeUnusedImports()
-            googleJavaFormat().aosp().reflowLongStrings().skipJavadocFormatting()
-            formatAnnotations()
+            palantirJavaFormat()
         }
     }
 }

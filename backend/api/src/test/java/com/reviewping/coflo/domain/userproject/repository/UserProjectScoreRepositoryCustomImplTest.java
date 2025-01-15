@@ -17,7 +17,9 @@ import org.springframework.context.annotation.Import;
 @Import({QueryDSLConfig.class, JpaAuditingConfig.class})
 class UserProjectScoreRepositoryCustomImplTest {
 
-    @Autowired private UserProjectScoreRepositoryCustomImpl userProjectScoreRepositoryCustomImpl;
+    @Autowired
+    private UserProjectScoreRepositoryCustomImpl userProjectScoreRepositoryCustomImpl;
+
     static final int CodeQualitySize = 6;
 
     @Test
@@ -31,8 +33,7 @@ class UserProjectScoreRepositoryCustomImplTest {
 
         // when
         List<UserProjectScore> topUserProjectScores =
-                userProjectScoreRepositoryCustomImpl.findTopUserProjectScores(
-                        userId, projectId, week, limit);
+                userProjectScoreRepositoryCustomImpl.findTopUserProjectScores(userId, projectId, week, limit);
 
         // then
         assertThat(topUserProjectScores)
@@ -41,9 +42,8 @@ class UserProjectScoreRepositoryCustomImplTest {
                 .extracting(score -> score.getUserProject().getId())
                 .containsOnly(4L, 2L);
 
-        topUserProjectScores.forEach(
-                score -> {
-                    assertEquals(week, score.getWeek());
-                });
+        topUserProjectScores.forEach(score -> {
+            assertEquals(week, score.getWeek());
+        });
     }
 }

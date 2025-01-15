@@ -52,8 +52,7 @@ public class CookieUtil {
         return Optional.empty();
     }
 
-    public void deleteCookie(
-            HttpServletRequest request, HttpServletResponse response, String cookieName) {
+    public void deleteCookie(HttpServletRequest request, HttpServletResponse response, String cookieName) {
         Optional<Cookie> optionalCookie = resolveCookie(request, cookieName);
         if (optionalCookie.isPresent()) {
             Cookie cookie = optionalCookie.get();
@@ -64,16 +63,14 @@ public class CookieUtil {
         }
     }
 
-    public void setCookie(
-            HttpServletResponse response, String cookieName, String cookieContents, int maxAge) {
-        ResponseCookie cookie =
-                ResponseCookie.from(cookieName, cookieContents)
-                        .path("/")
-                        .sameSite("None")
-                        .httpOnly(false)
-                        .secure(true)
-                        .maxAge(maxAge)
-                        .build();
+    public void setCookie(HttpServletResponse response, String cookieName, String cookieContents, int maxAge) {
+        ResponseCookie cookie = ResponseCookie.from(cookieName, cookieContents)
+                .path("/")
+                .sameSite("None")
+                .httpOnly(false)
+                .secure(true)
+                .maxAge(maxAge)
+                .build();
         response.addHeader("Set-Cookie", cookie.toString());
     }
 
@@ -83,8 +80,7 @@ public class CookieUtil {
 
     public <T> T deserialize(Cookie cookie, Class<T> clz) {
         if (isDeleted(cookie)) return null;
-        return clz.cast(
-                SerializationUtils.deserialize(Base64.getUrlDecoder().decode(cookie.getValue())));
+        return clz.cast(SerializationUtils.deserialize(Base64.getUrlDecoder().decode(cookie.getValue())));
     }
 
     private boolean isDeleted(Cookie cookie) {

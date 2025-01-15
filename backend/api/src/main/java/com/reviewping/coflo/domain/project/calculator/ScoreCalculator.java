@@ -17,10 +17,9 @@ public abstract class ScoreCalculator<T, A, R> {
     }
 
     public R process(ProjectWeek projectWeek, List<UserProjectScore> userProjectScores) {
-        List<A> processedScores =
-                userProjectScores.stream().collect(grouping()).entrySet().stream()
-                        .map(mapper())
-                        .toList();
+        List<A> processedScores = userProjectScores.stream().collect(grouping()).entrySet().stream()
+                .map(mapper())
+                .toList();
         List<A> finalScores = calculate(processedScores);
         return response(projectWeek, finalScores);
     }

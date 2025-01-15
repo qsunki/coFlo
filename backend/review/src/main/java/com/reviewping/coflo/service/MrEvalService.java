@@ -38,24 +38,17 @@ public class MrEvalService {
 
     @ServiceActivator(inputChannel = "mrEvalRequestChannel")
     public void evaluateMr(String mrEvalRequestMessage) {
-        MrEvalRequestMessage evalRequest =
-                jsonUtil.fromJson(mrEvalRequestMessage, new TypeReference<>() {});
+        MrEvalRequestMessage evalRequest = jsonUtil.fromJson(mrEvalRequestMessage, new TypeReference<>() {});
 
         log.info("MR 평가 시작 - MR Info ID: {}", evalRequest.mrInfoId());
         String evalPrompt = buildEvalPrompt(evalRequest.mrContent());
         ChatCompletionResponse chatCompletionResponse = openaiClient.chat(evalPrompt);
-        MrEvaluationMessage mrEvaluationMessage =
-                jsonUtil.fromJson(
-                        chatCompletionResponse.choices().getFirst().message().content(),
-                        new TypeReference<>() {});
+        MrEvaluationMessage mrEvaluationMessage = jsonUtil.fromJson(
+                chatCompletionResponse.choices().getFirst().message().content(), new TypeReference<>() {});
         MrEvalResponseMessage mrEvalResponseMessage =
-                new MrEvalResponseMessage(
-                        evalRequest.mrInfoId(), mrEvaluationMessage, evalRequest.username());
+                new MrEvalResponseMessage(evalRequest.mrInfoId(), mrEvaluationMessage, evalRequest.username());
         redisGateway.sendEval(mrEvalResponseMessage);
-        log.info(
-                "MR 평가 완료 - MR Info ID: {}, 평가 결과: {}",
-                evalRequest.mrInfoId(),
-                mrEvaluationMessage);
+        log.info("MR 평가 완료 - MR Info ID: {}, 평가 결과: {}", evalRequest.mrInfoId(), mrEvaluationMessage);
     }
 
     private String buildEvalPrompt(MrContent mrContent) {

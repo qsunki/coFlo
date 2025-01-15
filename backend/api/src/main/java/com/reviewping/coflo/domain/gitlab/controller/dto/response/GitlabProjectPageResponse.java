@@ -5,5 +5,4 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-public record GitlabProjectPageResponse(
-        List<GitlabProjectResponse> gitlabProjectList, PageInfo pageInfo) {}
+public record GitlabProjectPageResponse(List<GitlabProjectResponse> gitlabProjectList, PageInfo pageInfo) {}

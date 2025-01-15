@@ -48,13 +48,9 @@ public class CommonLoginSuccessHandler implements AuthenticationSuccessHandler {
         String refreshToken = JwtProvider.generateToken(responseMap, JwtConstants.REFRESH_EXP_TIME);
 
         Cookie accessTokenCookie =
-                cookieUtil.createCookie(
-                        JwtConstants.ACCESS_NAME, accessToken, JwtConstants.ACCESS_EXP_TIME * 60);
+                cookieUtil.createCookie(JwtConstants.ACCESS_NAME, accessToken, JwtConstants.ACCESS_EXP_TIME * 60);
         Cookie refreshTokenCookie =
-                cookieUtil.createCookie(
-                        JwtConstants.REFRESH_NAME,
-                        refreshToken,
-                        JwtConstants.REFRESH_EXP_TIME * 60);
+                cookieUtil.createCookie(JwtConstants.REFRESH_NAME, refreshToken, JwtConstants.REFRESH_EXP_TIME * 60);
 
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
@@ -68,16 +64,14 @@ public class CommonLoginSuccessHandler implements AuthenticationSuccessHandler {
         Long projectId = userService.getRecentVisitProjectId(user);
 
         if (isConnect && projectId == null) {
-            UserProject userProject =
-                    userProjectRepository.findTopByUserIdOrderByCreatedDateDesc(userId);
+            UserProject userProject = userProjectRepository.findTopByUserIdOrderByCreatedDateDesc(userId);
             projectId = userProject.getProject().getId();
         }
 
         String redirectUrl = cookieUtil.getCookieValue(request, "redirect_url");
-        redirectUrl =
-                String.format(
-                        "%s?isSignup=%b&isConnect=%b&projectId=%s",
-                        redirectUrl, isSignUp, isConnect, projectId != null ? projectId : "");
+        redirectUrl = String.format(
+                "%s?isSignup=%b&isConnect=%b&projectId=%s",
+                redirectUrl, isSignUp, isConnect, projectId != null ? projectId : "");
 
         cookieUtil.deleteCookie(request, response, "redirect_url");
 

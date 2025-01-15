@@ -30,12 +30,23 @@ public class MrInfo extends BaseTimeEntity {
 
     private LocalDateTime gitlabCreatedDate;
 
-    @Setter private Integer readabilityScore;
-    @Setter private Integer consistencyScore;
-    @Setter private Integer reusabilityScore;
-    @Setter private Integer reliabilityScore;
-    @Setter private Integer securityScore;
-    @Setter private Integer maintainabilityScore;
+    @Setter
+    private Integer readabilityScore;
+
+    @Setter
+    private Integer consistencyScore;
+
+    @Setter
+    private Integer reusabilityScore;
+
+    @Setter
+    private Integer reliabilityScore;
+
+    @Setter
+    private Integer securityScore;
+
+    @Setter
+    private Integer maintainabilityScore;
 
     @Builder
     public MrInfo(Project project, Long gitlabMrIid, LocalDateTime gitlabCreatedDate) {

@@ -21,12 +21,11 @@ public class TimerAspect {
         String methodName = joinPoint.getSignature().getName();
         //        String timerName = String.format("%s.%s", className, methodName);
 
-        Timer timer =
-                Timer.builder("method.execution.time")
-                        .description("Execution time of method")
-                        .tag("class", className)
-                        .tag("method", methodName)
-                        .register(meterRegistry);
+        Timer timer = Timer.builder("method.execution.time")
+                .description("Execution time of method")
+                .tag("class", className)
+                .tag("method", methodName)
+                .register(meterRegistry);
 
         long startTime = System.nanoTime();
         try {

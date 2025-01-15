@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BadgeCode {
-    @Id private Long id;
+    @Id
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String name;

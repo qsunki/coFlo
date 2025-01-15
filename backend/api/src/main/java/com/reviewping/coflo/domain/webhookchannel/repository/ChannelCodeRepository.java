@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ChannelCodeRepository extends JpaRepository<ChannelCode, Long> {
     default ChannelCode findChannelCodeById(Long channelCodeId) {
-        return findById(channelCodeId)
-                .orElseThrow(() -> new BusinessException(CHANNEL_CODE_NOT_EXIST));
+        return findById(channelCodeId).orElseThrow(() -> new BusinessException(CHANNEL_CODE_NOT_EXIST));
     }
 }

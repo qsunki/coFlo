@@ -12,8 +12,7 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-public class TotalScoreCalculator
-        extends ScoreCalculator<Integer, ScoreOfWeekResponse, UserProjectTotalScoreResponse> {
+public class TotalScoreCalculator extends ScoreCalculator<Integer, ScoreOfWeekResponse, UserProjectTotalScoreResponse> {
 
     public TotalScoreCalculator(CalculationType calculationType) {
         super(calculationType);
@@ -29,10 +28,9 @@ public class TotalScoreCalculator
         return entry -> {
             Integer week = entry.getKey();
             List<UserProjectScore> userProjectScoresOfWeek = entry.getValue();
-            long totalScoreOfWeekSum =
-                    userProjectScoresOfWeek.stream()
-                            .mapToLong(UserProjectScore::getTotalScore)
-                            .sum();
+            long totalScoreOfWeekSum = userProjectScoresOfWeek.stream()
+                    .mapToLong(UserProjectScore::getTotalScore)
+                    .sum();
             return new ScoreOfWeekResponse(week, totalScoreOfWeekSum);
         };
     }
@@ -50,9 +48,7 @@ public class TotalScoreCalculator
     }
 
     @Override
-    protected UserProjectTotalScoreResponse response(
-            ProjectWeek projectWeek, List<ScoreOfWeekResponse> scores) {
-        return new UserProjectTotalScoreResponse(
-                projectWeek.startDate(), projectWeek.endDate(), scores);
+    protected UserProjectTotalScoreResponse response(ProjectWeek projectWeek, List<ScoreOfWeekResponse> scores) {
+        return new UserProjectTotalScoreResponse(projectWeek.startDate(), projectWeek.endDate(), scores);
     }
 }

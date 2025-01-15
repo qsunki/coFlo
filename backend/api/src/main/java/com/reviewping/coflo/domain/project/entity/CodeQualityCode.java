@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CodeQualityCode {
-    @Id private Long id;
+    @Id
+    private Long id;
 
     private String name;
 }

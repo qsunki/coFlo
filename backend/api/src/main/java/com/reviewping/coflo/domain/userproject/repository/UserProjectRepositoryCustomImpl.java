@@ -23,10 +23,7 @@ public class UserProjectRepositoryCustomImpl implements UserProjectRepositoryCus
     public List<UserProject> getUserProjectsOrderByModifiedDateDesc(Long gitlabAccountId) {
 
         JPAQuery<LocalDateTime> subQuery =
-                queryFactory
-                        .select(mrInfo.modifiedDate.max())
-                        .from(mrInfo)
-                        .where(mrInfo.project.id.eq(project.id));
+                queryFactory.select(mrInfo.modifiedDate.max()).from(mrInfo).where(mrInfo.project.id.eq(project.id));
 
         return queryFactory
                 .selectFrom(userProject)

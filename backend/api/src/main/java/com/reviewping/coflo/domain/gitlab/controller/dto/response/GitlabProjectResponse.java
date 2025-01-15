@@ -5,8 +5,7 @@ import com.reviewping.coflo.global.util.GraphQlUtil;
 import lombok.Builder;
 
 @Builder
-public record GitlabProjectResponse(
-        Long gitlabProjectId, String name, boolean isLinkable, boolean isLinked) {
+public record GitlabProjectResponse(Long gitlabProjectId, String name, boolean isLinkable, boolean isLinked) {
 
     public static GitlabProjectResponse ofNonLinkable(GitlabProjectSimpleContent content) {
         return GitlabProjectResponse.builder()
@@ -17,8 +16,7 @@ public record GitlabProjectResponse(
                 .build();
     }
 
-    public static GitlabProjectResponse ofLinkable(
-            GitlabProjectSimpleContent content, boolean isLinked) {
+    public static GitlabProjectResponse ofLinkable(GitlabProjectSimpleContent content, boolean isLinked) {
         return GitlabProjectResponse.builder()
                 .gitlabProjectId(GraphQlUtil.extractIdFromId(content.id()))
                 .name(content.fullPath())

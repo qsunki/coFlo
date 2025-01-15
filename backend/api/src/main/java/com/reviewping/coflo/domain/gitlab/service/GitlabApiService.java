@@ -31,39 +31,29 @@ public class GitlabApiService {
     private final GitlabAccountRepository gitlabAccountRepository;
     private final UserRepository userRepository;
 
-    public GitlabProjectPageResponse getGitlabProjects(
-            Long userId, GitlabSearchRequest gitlabSearchRequest) {
+    public GitlabProjectPageResponse getGitlabProjects(Long userId, GitlabSearchRequest gitlabSearchRequest) {
         GitlabAccount gitlabAccount = gitlabAccountRepository.getFirstByUserId(userId);
-        GitlabProjectSearchContent gitlabProjectPage =
-                gitLabClient.searchGitlabProjects(
-                        gitlabAccount.getDomain(),
-                        gitlabAccount.getUserToken(),
-                        gitlabSearchRequest);
+        GitlabProjectSearchContent gitlabProjectPage = gitLabClient.searchGitlabProjects(
+                gitlabAccount.getDomain(), gitlabAccount.getUserToken(), gitlabSearchRequest);
 
-        List<GitlabProjectResponse> gitlabProjects =
-                buildGitlabProjectResponses(gitlabProjectPage, gitlabAccount);
+        List<GitlabProjectResponse> gitlabProjects = buildGitlabProjectResponses(gitlabProjectPage, gitlabAccount);
 
         return new GitlabProjectPageResponse(gitlabProjects, gitlabProjectPage.pageInfo());
     }
 
     public List<String> getGitlabProjectBranches(Long userId, Long gitlabProjectId) {
         GitlabAccount gitlabAccount = gitlabAccountRepository.getFirstByUserId(userId);
-        List<GitlabBranchContent> allBranches =
-                gitLabClient.getAllBranchNames(
-                        gitlabAccount.getDomain(), gitlabAccount.getUserToken(), gitlabProjectId);
-        allBranches.sort(
-                (branch1, branch2) -> {
-                    if (Boolean.TRUE.equals(branch1.isDefault())
-                            && Boolean.FALSE.equals(branch2.isDefault())) {
-                        return -1;
-                    } else if (Boolean.FALSE.equals(branch1.isDefault())
-                            && Boolean.TRUE.equals(branch2.isDefault())) {
-                        return 1;
-                    }
-                    return Boolean.compare(
-                            Boolean.TRUE.equals(branch2.isProtected()),
-                            Boolean.TRUE.equals(branch1.isProtected()));
-                });
+        List<GitlabBranchContent> allBranches = gitLabClient.getAllBranchNames(
+                gitlabAccount.getDomain(), gitlabAccount.getUserToken(), gitlabProjectId);
+        allBranches.sort((branch1, branch2) -> {
+            if (Boolean.TRUE.equals(branch1.isDefault()) && Boolean.FALSE.equals(branch2.isDefault())) {
+                return -1;
+            } else if (Boolean.FALSE.equals(branch1.isDefault()) && Boolean.TRUE.equals(branch2.isDefault())) {
+                return 1;
+            }
+            return Boolean.compare(
+                    Boolean.TRUE.equals(branch2.isProtected()), Boolean.TRUE.equals(branch1.isProtected()));
+        });
 
         return allBranches.stream().map(GitlabBranchContent::name).collect(Collectors.toList());
     }
@@ -80,8 +70,7 @@ public class GitlabApiService {
     public Boolean validateBotToken(Long userId, Long gitlabProjectId, String botToken) {
         try {
             User user = userRepository.getById(userId);
-            gitLabClient.getSingleProject(
-                    user.getGitlabAccounts().getFirst().getDomain(), botToken, gitlabProjectId);
+            gitLabClient.getSingleProject(user.getGitlabAccounts().getFirst().getDomain(), botToken, gitlabProjectId);
             return true;
         } catch (Exception e) {
             return false;
@@ -99,16 +88,14 @@ public class GitlabApiService {
             GitlabProjectSimpleContent content, Long gitlabAccountId) {
         return projectRepository
                 .findByGitlabProjectId(GraphQlUtil.extractIdFromId(content.id()))
-                .map(
-                        project -> {
-                            boolean isLinked = isProjectLinked(gitlabAccountId, project.getId());
-                            return GitlabProjectResponse.ofLinkable(content, isLinked);
-                        })
+                .map(project -> {
+                    boolean isLinked = isProjectLinked(gitlabAccountId, project.getId());
+                    return GitlabProjectResponse.ofLinkable(content, isLinked);
+                })
                 .orElseGet(() -> GitlabProjectResponse.ofNonLinkable(content));
     }
 
     private boolean isProjectLinked(Long gitlabAccountId, Long projectId) {
-        return userProjectRepository.existsByGitlabAccountIdAndProjectId(
-                gitlabAccountId, projectId);
+        return userProjectRepository.existsByGitlabAccountIdAndProjectId(gitlabAccountId, projectId);
     }
 }

@@ -31,14 +31,12 @@ public class WebHookUtil {
         HttpHeaders headers = restTemplateUtil.createHeaders(CONTENT_TYPE);
 
         String body =
-                String.format(
-                        "{\"text\": \"%s\"}", message.replace("\n", "\\n").replace("\"", "\\\""));
+                String.format("{\"text\": \"%s\"}", message.replace("\n", "\\n").replace("\"", "\\\""));
 
         log.info("sendWebHookMessage {}", body);
 
         try {
-            restTemplateUtil.sendPostRequest(
-                    BASE_URL, headers, body, new ParameterizedTypeReference<String>() {});
+            restTemplateUtil.sendPostRequest(BASE_URL, headers, body, new ParameterizedTypeReference<String>() {});
             log.info("WebHook message sent successfully.");
         } catch (HttpClientErrorException e) {
             log.error(
@@ -46,10 +44,7 @@ public class WebHookUtil {
                     e.getStatusCode(),
                     e.getResponseBodyAsString());
         } catch (Exception e) {
-            log.error(
-                    "An unexpected error occurred while sending WebHook message: {}",
-                    e.getMessage(),
-                    e);
+            log.error("An unexpected error occurred while sending WebHook message: {}", e.getMessage(), e);
         }
     }
 }

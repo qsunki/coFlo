@@ -48,8 +48,7 @@ public class SecurityConfig {
     private final BadgeEventService badgeEventService;
     private final UserService userService;
     private final UserProjectRepository userProjectRepository;
-    private final HttpCookieOAuth2AuthorizationRequestRepository
-            httpCookieOAuth2AuthorizationRequestRepository;
+    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -59,12 +58,7 @@ public class SecurityConfig {
     @Bean
     public CommonLoginSuccessHandler commonLoginSuccessHandler() {
         return new CommonLoginSuccessHandler(
-                redisUtil,
-                cookieUtil,
-                loginHistoryService,
-                badgeEventService,
-                userService,
-                userProjectRepository);
+                redisUtil, cookieUtil, loginHistoryService, badgeEventService, userService, userProjectRepository);
     }
 
     @Bean
@@ -74,78 +68,58 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        JwtVerifyFilter jwtVerifyFilter =
-                new JwtVerifyFilter(redisUtil, cookieUtil, authenticationService);
+        JwtVerifyFilter jwtVerifyFilter = new JwtVerifyFilter(redisUtil, cookieUtil, authenticationService);
 
-        http.exceptionHandling(
-                (exceptions) ->
-                        exceptions
-                                .authenticationEntryPoint(
-                                        new JwtAuthenticationEntryPoint()) // 인증 실패 핸들링
-                                .accessDeniedHandler(new JwtAccessDeniedHandler())); // 인가 실패 핸들링
+        http.exceptionHandling((exceptions) -> exceptions
+                .authenticationEntryPoint(new JwtAuthenticationEntryPoint()) // 인증 실패 핸들링
+                .accessDeniedHandler(new JwtAccessDeniedHandler())); // 인가 실패 핸들링
 
         http.authorizeHttpRequests(
-                authorize ->
-                        authorize
-                                .requestMatchers(
-                                        "/swagger-ui/**",
-                                        "/v3/api-docs/**",
-                                        "/actuator/**",
-                                        "/test",
-                                        "/api/sse/subscribe",
-                                        "/favicon.ico",
-                                        "/webhook/*")
-                                .permitAll()
-                                .anyRequest()
-                                .authenticated() // 그 외 모든 경로는 인증 필요
+                authorize -> authorize
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/actuator/**",
+                                "/test",
+                                "/api/sse/subscribe",
+                                "/favicon.ico",
+                                "/webhook/*")
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated() // 그 외 모든 경로는 인증 필요
                 );
 
         http.csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(
-                        httpSecuritySessionManagementConfigurer -> {
-                            httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
-                                    SessionCreationPolicy.STATELESS);
-                        })
-                .cors(
-                        cors -> {
-                            cors.configurationSource(corsConfigurationSource());
-                        })
+                .sessionManagement(httpSecuritySessionManagementConfigurer -> {
+                    httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                })
+                .cors(cors -> {
+                    cors.configurationSource(corsConfigurationSource());
+                })
                 .addFilterBefore(jwtVerifyFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtExceptionFilter(objectMapper), jwtVerifyFilter.getClass())
                 .formLogin(AbstractHttpConfigurer::disable);
 
-        http.oauth2Login(
-                httpSecurityOAuth2LoginConfigurer ->
-                        httpSecurityOAuth2LoginConfigurer
-                                .authorizationEndpoint(
-                                        authorization ->
-                                                authorization
-                                                        .baseUri("/api/oauth2/authorization")
-                                                        .authorizationRequestRepository(
-                                                                httpCookieOAuth2AuthorizationRequestRepository))
-                                .redirectionEndpoint(
-                                        redirection ->
-                                                redirection.baseUri("/api/login/oauth2/code/*"))
-                                .successHandler(commonLoginSuccessHandler())
-                                .failureHandler(commonLoginFailHandler())
-                                .userInfoEndpoint(
-                                        userInfoEndpointConfig ->
-                                                userInfoEndpointConfig.userService(
-                                                        oAuth2UserService)));
+        http.oauth2Login(httpSecurityOAuth2LoginConfigurer -> httpSecurityOAuth2LoginConfigurer
+                .authorizationEndpoint(authorization -> authorization
+                        .baseUri("/api/oauth2/authorization")
+                        .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
+                .redirectionEndpoint(redirection -> redirection.baseUri("/api/login/oauth2/code/*"))
+                .successHandler(commonLoginSuccessHandler())
+                .failureHandler(commonLoginFailHandler())
+                .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(oAuth2UserService)));
 
         return http.build();
     }
 
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(
-                Arrays.asList(
-                        "http://localhost:5173",
-                        "https://localhost:5173",
-                        "http://www.coflo.co.kr",
-                        "https://www.coflo.co.kr"));
-        configuration.setAllowedMethods(
-                Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:5173",
+                "https://localhost:5173",
+                "http://www.coflo.co.kr",
+                "https://www.coflo.co.kr"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
 

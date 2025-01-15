@@ -72,7 +72,8 @@ public class BadgeEventService {
         if (userBadgeRepository.existsByUserAndBadgeCode(user, badgeCode)) return;
 
         List<GitlabAccount> gitlabAccounts = gitlabAccountRepository.findAllByUser(user);
-        List<Long> gitlabAccountIds = gitlabAccounts.stream().map(GitlabAccount::getId).toList();
+        List<Long> gitlabAccountIds =
+                gitlabAccounts.stream().map(GitlabAccount::getId).toList();
         Long projectCount = userProjectRepository.countByGitlabAccountIds(gitlabAccountIds);
 
         if (projectCount == PROJECT_LINK_TARGET_COUNT) {
@@ -123,12 +124,9 @@ public class BadgeEventService {
     @Transactional
     public void eventBestMrCount() {
         // BestMrHistory가 N회 이상인 사용자 ID 조회
-        List<Long> userIds =
-                bestMrHistoryRepository.findUsersWithAtLeastNHistory(
-                        BEST_MERGE_REQUEST_TARGET_COUNT);
+        List<Long> userIds = bestMrHistoryRepository.findUsersWithAtLeastNHistory(BEST_MERGE_REQUEST_TARGET_COUNT);
 
-        List<Long> newBadgeUserIds =
-                userBadgeRepository.findUserIdsWithoutBadge(userIds, CONQUEROR.getId());
+        List<Long> newBadgeUserIds = userBadgeRepository.findUserIdsWithoutBadge(userIds, CONQUEROR.getId());
 
         badgeCode = badgeCodeRepository.getById(CONQUEROR.getId());
 
@@ -144,9 +142,7 @@ public class BadgeEventService {
     @Transactional
     public void eventAiRewardScore() {
         badgeCode = badgeCodeRepository.getById(CODE_MASTER.getId());
-        userProjectRepository
-                .findAll()
-                .forEach(userProject -> processUserProject(userProject, badgeCode));
+        userProjectRepository.findAll().forEach(userProject -> processUserProject(userProject, badgeCode));
     }
 
     // 리뷰 탐색자 - 첫 AI 리뷰 재생성
@@ -172,13 +168,10 @@ public class BadgeEventService {
         Project project = userProject.getProject();
         User user = userProject.getGitlabAccount().getUser();
 
-        int week =
-                projectDateUtil.calculateWeekNumber(
-                        project.getCreatedDate().toLocalDate(), LocalDate.now());
+        int week = projectDateUtil.calculateWeekNumber(project.getCreatedDate().toLocalDate(), LocalDate.now());
 
         long totalScore = calculateTotalScore(userProject, week - 1);
-        if (totalScore >= AI_REWARD_TARGET_SCORE
-                && !userBadgeRepository.existsByUserAndBadgeCode(user, badgeCode)) {
+        if (totalScore >= AI_REWARD_TARGET_SCORE && !userBadgeRepository.existsByUserAndBadgeCode(user, badgeCode)) {
             userBadge = UserBadge.of(user, badgeCode);
             userBadgeRepository.save(userBadge);
             eventAllBadgeUnlocked(user);

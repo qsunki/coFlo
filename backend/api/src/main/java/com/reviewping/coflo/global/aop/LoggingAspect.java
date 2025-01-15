@@ -30,11 +30,7 @@ public class LoggingAspect {
         String className = joinPoint.getSignature().getDeclaringTypeName();
         try {
             Object result = joinPoint.proceed();
-            log.info(
-                    "{}.{}() with arguments:{} Successfully executed",
-                    className,
-                    methodName,
-                    Arrays.toString(args));
+            log.info("{}.{}() with arguments:{} Successfully executed", className, methodName, Arrays.toString(args));
             return result;
         } catch (Exception ex) {
             String errorLogMessage = getErrorLogMessage(className, methodName, args, ex);
@@ -45,13 +41,10 @@ public class LoggingAspect {
         }
     }
 
-    private String getErrorLogMessage(
-            String className, String methodName, Object[] args, Exception ex) {
+    private String getErrorLogMessage(String className, String methodName, Object[] args, Exception ex) {
         StringBuilder messageBuilder = new StringBuilder();
-        messageBuilder.append(
-                String.format(
-                        "```\nException in %s.%s() called with arguments: %s\n",
-                        className, methodName, Arrays.toString(args)));
+        messageBuilder.append(String.format(
+                "```\nException in %s.%s() called with arguments: %s\n", className, methodName, Arrays.toString(args)));
 
         messageBuilder.append("Exception message: ").append(ex.getMessage()).append("\n");
 

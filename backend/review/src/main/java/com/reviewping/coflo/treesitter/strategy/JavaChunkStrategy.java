@@ -35,16 +35,10 @@ public class JavaChunkStrategy implements ChunkStrategy {
                         TSNode methodNode = classBodyNode.getChild(k);
 
                         if ("method_declaration".equals(methodNode.getType())) {
-                            String methodCode =
-                                    new String(
-                                            Arrays.copyOfRange(
-                                                    code,
-                                                    methodNode.getStartByte(),
-                                                    methodNode.getEndByte()));
+                            String methodCode = new String(
+                                    Arrays.copyOfRange(code, methodNode.getStartByte(), methodNode.getEndByte()));
 
-                            chunks.add(
-                                    new ChunkedCode(
-                                            methodCode, file.getName(), file.getPath(), "java"));
+                            chunks.add(new ChunkedCode(methodCode, file.getName(), file.getPath(), "java"));
                         }
                     }
                 }

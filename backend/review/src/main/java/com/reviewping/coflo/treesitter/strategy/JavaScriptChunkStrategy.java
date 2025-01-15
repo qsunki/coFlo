@@ -28,14 +28,12 @@ public class JavaScriptChunkStrategy implements ChunkStrategy {
         return chunks;
     }
 
-    private void traverseAndCollectNodes(
-            TSNode node, List<ChunkedCode> chunks, byte[] code, File file) {
+    private void traverseAndCollectNodes(TSNode node, List<ChunkedCode> chunks, byte[] code, File file) {
 
         if ("class_declaration".equals(node.getType())
                 || "function_declaration".equals(node.getType())
                 || "lexical_declaration".equals(node.getType())) {
-            String nodeContent =
-                    new String(Arrays.copyOfRange(code, node.getStartByte(), node.getEndByte()));
+            String nodeContent = new String(Arrays.copyOfRange(code, node.getStartByte(), node.getEndByte()));
             chunks.add(new ChunkedCode(nodeContent, file.getName(), file.getPath(), "js"));
             return;
         }

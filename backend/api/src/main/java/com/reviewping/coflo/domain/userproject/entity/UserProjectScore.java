@@ -28,8 +28,7 @@ public class UserProjectScore extends BaseTimeEntity {
     private Long totalScore;
 
     @Builder
-    public UserProjectScore(
-            UserProject userProject, CodeQualityCode codeQualityCode, int week, Long totalScore) {
+    public UserProjectScore(UserProject userProject, CodeQualityCode codeQualityCode, int week, Long totalScore) {
         this.userProject = userProject;
         this.codeQualityCode = codeQualityCode;
         this.week = week;

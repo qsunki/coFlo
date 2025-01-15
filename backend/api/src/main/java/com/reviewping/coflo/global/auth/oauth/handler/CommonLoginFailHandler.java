@@ -25,9 +25,7 @@ public class CommonLoginFailHandler implements AuthenticationFailureHandler {
 
     @Override
     public void onAuthenticationFailure(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            AuthenticationException exception)
+            HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
             throws IOException, ServletException {
         log.info("=== 로그인 실패 === Exception: {}", exception.getMessage());
 
@@ -37,15 +35,13 @@ public class CommonLoginFailHandler implements AuthenticationFailureHandler {
 
         ErrorCode errorCode = ErrorCode.LOGIN_FAIL;
 
-        Map<String, String> error =
-                Map.of(
-                        "status", "ERROR",
-                        "code", errorCode.getCode(),
-                        "message", errorCode.getMessage());
+        Map<String, String> error = Map.of(
+                "status", "ERROR",
+                "code", errorCode.getCode(),
+                "message", errorCode.getMessage());
         response.getWriter().write(objectMapper.writeValueAsString(error));
 
-        String logMessage =
-                String.format("OAuth2 Authentication Failed: %s", exception.getMessage());
+        String logMessage = String.format("OAuth2 Authentication Failed: %s", exception.getMessage());
         webHookUtil.sendWebHookMessage(logMessage);
     }
 }

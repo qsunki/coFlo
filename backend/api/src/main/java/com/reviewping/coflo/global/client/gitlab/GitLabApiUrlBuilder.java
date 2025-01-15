@@ -57,27 +57,15 @@ public class GitLabApiUrlBuilder {
     }
 
     public static String createProjectBranchesUrl(String gitlabUrl, Long gitlabProjectId) {
-        return URL_PROTOCOL_HTTPS
-                + gitlabUrl
-                + SINGLE_PROJECT_ENDPOINT
-                + gitlabProjectId
-                + "/repository/branches";
+        return URL_PROTOCOL_HTTPS + gitlabUrl + SINGLE_PROJECT_ENDPOINT + gitlabProjectId + "/repository/branches";
     }
 
     public static String createProjectWebhookUrl(String gitlabUrl, Long gitlabProjectId) {
-        return URL_PROTOCOL_HTTPS
-                + gitlabUrl
-                + SINGLE_PROJECT_ENDPOINT
-                + gitlabProjectId
-                + "/hooks";
+        return URL_PROTOCOL_HTTPS + gitlabUrl + SINGLE_PROJECT_ENDPOINT + gitlabProjectId + "/hooks";
     }
 
     public static String createProjectLabelUrl(String gitlabUrl, Long gitlabProjectId) {
-        return URL_PROTOCOL_HTTPS
-                + gitlabUrl
-                + SINGLE_PROJECT_ENDPOINT
-                + gitlabProjectId
-                + "/labels";
+        return URL_PROTOCOL_HTTPS + gitlabUrl + SINGLE_PROJECT_ENDPOINT + gitlabProjectId + "/labels";
     }
 
     public static String createDiscussionUrl(String gitlabUrl, Long gitlabProjectId, Long iid) {

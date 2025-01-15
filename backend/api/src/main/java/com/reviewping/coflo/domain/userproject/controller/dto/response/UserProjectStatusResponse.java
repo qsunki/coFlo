@@ -1,10 +1,8 @@
 package com.reviewping.coflo.domain.userproject.controller.dto.response;
 
-public record UserProjectStatusResponse(
-        Boolean hasLinkedProject, Long projectId, String projectFullPath) {
+public record UserProjectStatusResponse(Boolean hasLinkedProject, Long projectId, String projectFullPath) {
 
-    public static UserProjectStatusResponse withProjectDetails(
-            Long projectId, String projectFullPath) {
+    public static UserProjectStatusResponse withProjectDetails(Long projectId, String projectFullPath) {
         return new UserProjectStatusResponse(true, projectId, projectFullPath);
     }
 

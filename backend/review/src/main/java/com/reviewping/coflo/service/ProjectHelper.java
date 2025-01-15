@@ -33,14 +33,13 @@ public class ProjectHelper {
                 .filter(this::isCodeFile)
                 .flatMap(filePath -> preprocessCode(filePath.toFile()).stream())
                 .map(this::addEmbedding)
-                .forEach(
-                        chunkedCode -> {
-                            buffer.add(chunkedCode);
-                            if (buffer.size() >= BATCH_SIZE) {
-                                chunkedCodeRepository.saveAllChunkedCodes(branchInfoId, buffer);
-                                buffer.clear();
-                            }
-                        });
+                .forEach(chunkedCode -> {
+                    buffer.add(chunkedCode);
+                    if (buffer.size() >= BATCH_SIZE) {
+                        chunkedCodeRepository.saveAllChunkedCodes(branchInfoId, buffer);
+                        buffer.clear();
+                    }
+                });
 
         // 남아있는 데이터가 있으면 마지막으로 저장
         if (!buffer.isEmpty()) {

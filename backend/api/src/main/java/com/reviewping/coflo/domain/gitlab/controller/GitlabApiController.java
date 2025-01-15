@@ -31,10 +31,8 @@ public class GitlabApiController {
             @RequestParam(name = "size", defaultValue = "10") int size,
             @RequestParam(name = "startCursor", defaultValue = "") String startCursor,
             @RequestParam(name = "endCursor", defaultValue = "") String endCursor) {
-        GitlabProjectPageResponse gitlabProjects =
-                gitlabApiService.getGitlabProjects(
-                        user.getId(),
-                        new GitlabSearchRequest(keyword, size, startCursor, endCursor));
+        GitlabProjectPageResponse gitlabProjects = gitlabApiService.getGitlabProjects(
+                user.getId(), new GitlabSearchRequest(keyword, size, startCursor, endCursor));
         return ApiSuccessResponse.success(gitlabProjects);
     }
 
@@ -42,27 +40,21 @@ public class GitlabApiController {
     @Operation(summary = "프로젝트 연동 시 branch 목록 조회")
     public ApiResponse<List<String>> getGitlabProjectBranches(
             @AuthUser User user, @PathVariable("gitlabProjectId") Long gitlabProjectId) {
-        return ApiSuccessResponse.success(
-                gitlabApiService.getGitlabProjectBranches(user.getId(), gitlabProjectId));
+        return ApiSuccessResponse.success(gitlabApiService.getGitlabProjectBranches(user.getId(), gitlabProjectId));
     }
 
     @PostMapping("/user-token/validate")
     @Operation(summary = "User Token 유효성 검증")
-    public ApiResponse<Boolean> validateUserToken(
-            @RequestBody GitlabAccountRequest gitlabAccountRequest) {
+    public ApiResponse<Boolean> validateUserToken(@RequestBody GitlabAccountRequest gitlabAccountRequest) {
         return ApiSuccessResponse.success(
-                gitlabApiService.validateUserToken(
-                        gitlabAccountRequest.domain(), gitlabAccountRequest.userToken()));
+                gitlabApiService.validateUserToken(gitlabAccountRequest.domain(), gitlabAccountRequest.userToken()));
     }
 
     @PostMapping("/bot-token/validate")
     @Operation(summary = "Bot Token 유효성 검증")
     public ApiResponse<Boolean> validateUserToken(
             @AuthUser User user, @RequestBody BotTokenValidateRequest botTokenValidateRequest) {
-        return ApiSuccessResponse.success(
-                gitlabApiService.validateBotToken(
-                        user.getId(),
-                        botTokenValidateRequest.gitlabProjectId(),
-                        botTokenValidateRequest.botToken()));
+        return ApiSuccessResponse.success(gitlabApiService.validateBotToken(
+                user.getId(), botTokenValidateRequest.gitlabProjectId(), botTokenValidateRequest.botToken()));
     }
 }

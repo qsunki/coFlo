@@ -19,8 +19,7 @@ public class BestMergeRequestBadgeTasklet implements Tasklet {
 
     @Override
     @Retryable(retryFor = Exception.class, maxAttempts = 3, backoff = @Backoff(delay = 3600000L))
-    public RepeatStatus execute(
-            @Nonnull StepContribution contribution, @Nonnull ChunkContext chunkContext) {
+    public RepeatStatus execute(@Nonnull StepContribution contribution, @Nonnull ChunkContext chunkContext) {
         badgeEventService.eventBestMrCount();
 
         return RepeatStatus.FINISHED;

@@ -46,18 +46,13 @@ public class BestMrHistoryService {
 
         // Process
         List<User> users = userRepository.findAllByUsernames(usernames);
-        Map<String, User> userMap =
-                users.stream().collect(Collectors.toMap(User::getUsername, Function.identity()));
+        Map<String, User> userMap = users.stream().collect(Collectors.toMap(User::getUsername, Function.identity()));
 
         // Write
-        List<BestMrHistory> histories =
-                usernames.stream()
-                        .filter(userMap::containsKey)
-                        .map(
-                                username ->
-                                        new BestMrHistory(
-                                                userMap.get(username).getId(), LocalDate.now()))
-                        .toList();
+        List<BestMrHistory> histories = usernames.stream()
+                .filter(userMap::containsKey)
+                .map(username -> new BestMrHistory(userMap.get(username).getId(), LocalDate.now()))
+                .toList();
         bestMrHistoryRepository.saveAll(histories);
     }
 }

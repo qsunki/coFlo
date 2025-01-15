@@ -34,10 +34,7 @@ public class RestTemplateUtil {
     }
 
     public <T> ResponseEntity<T> sendPostRequest(
-            String url,
-            HttpHeaders headers,
-            Object body,
-            ParameterizedTypeReference<T> responseType) {
+            String url, HttpHeaders headers, Object body, ParameterizedTypeReference<T> responseType) {
         HttpEntity<Object> entity = new HttpEntity<>(body, headers);
         try {
             return restTemplate.exchange(url, HttpMethod.POST, entity, responseType);

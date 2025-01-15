@@ -35,19 +35,16 @@ public class MergeRequestService {
     private final ProjectRepository projectRepository;
     private final ProjectDateUtil projectDateUtil;
 
-    public GitlabMrPageResponse getGitlabMergeRequests(
-            Long userId, Long projectId, GitlabMrPageRequest request) {
-        GitlabAccount gitlabAccount =
-                gitlabAccountRepository.getByUserIdAndProjectId(userId, projectId);
+    public GitlabMrPageResponse getGitlabMergeRequests(Long userId, Long projectId, GitlabMrPageRequest request) {
+        GitlabAccount gitlabAccount = gitlabAccountRepository.getByUserIdAndProjectId(userId, projectId);
         Project project = projectRepository.getById(projectId);
 
-        GitlabMrPageContent gitlabMrPage =
-                gitLabClient.searchGitlabMergeRequests(
-                        gitlabAccount.getDomain(),
-                        gitlabAccount.getUserToken(),
-                        project.getGitlabProjectId(),
-                        request,
-                        project.getCreatedDate());
+        GitlabMrPageContent gitlabMrPage = gitLabClient.searchGitlabMergeRequests(
+                gitlabAccount.getDomain(),
+                gitlabAccount.getUserToken(),
+                project.getGitlabProjectId(),
+                request,
+                project.getCreatedDate());
 
         List<GitlabMrResponse> gitlabMrResponses = buildGitlabMrResponses(gitlabMrPage);
 
@@ -55,20 +52,20 @@ public class MergeRequestService {
     }
 
     public List<GitlabMrQueryResponse> getBestMergeRequests(Long userId, Long projectId) {
-        GitlabAccount gitlabAccount =
-                gitlabAccountRepository.getByUserIdAndProjectId(userId, projectId);
+        GitlabAccount gitlabAccount = gitlabAccountRepository.getByUserIdAndProjectId(userId, projectId);
         Project project = projectRepository.getById(projectId);
         List<MrInfo> mrInfoList = getTop3MrInfos(project);
 
         return gitLabClient.getTop3MrList(
-                gitlabAccount.getDomain(),
-                gitlabAccount.getUserToken(),
-                project.getFullPath(),
-                mrInfoList);
+                gitlabAccount.getDomain(), gitlabAccount.getUserToken(), project.getFullPath(), mrInfoList);
     }
 
     public List<String> getUsernameBestMergeRequests(Project project) {
-        Long userId = project.getUserProjects().getFirst().getGitlabAccount().getUser().getId();
+        Long userId = project.getUserProjects()
+                .getFirst()
+                .getGitlabAccount()
+                .getUser()
+                .getId();
         List<GitlabMrQueryResponse> top3MrList = getBestMergeRequests(userId, project.getId());
         return top3MrList == null
                 ? Collections.emptyList()
@@ -76,14 +73,10 @@ public class MergeRequestService {
     }
 
     private List<MrInfo> getTop3MrInfos(Project project) {
-        LocalDate[] startAndEndDates =
-                projectDateUtil.calculateWeekStartAndEndDates(
-                        LocalDate.from(project.getCreatedDate()), LocalDate.now());
-        List<MrInfo> mrInfoList =
-                mrInfoRepository.findTop3MrInfoList(
-                        project.getId(),
-                        startAndEndDates[0].atTime(0, 0, 0),
-                        startAndEndDates[1].atTime(0, 0, 0));
+        LocalDate[] startAndEndDates = projectDateUtil.calculateWeekStartAndEndDates(
+                LocalDate.from(project.getCreatedDate()), LocalDate.now());
+        List<MrInfo> mrInfoList = mrInfoRepository.findTop3MrInfoList(
+                project.getId(), startAndEndDates[0].atTime(0, 0, 0), startAndEndDates[1].atTime(0, 0, 0));
         return mrInfoList;
     }
 
@@ -95,8 +88,7 @@ public class MergeRequestService {
 
     private GitlabMrResponse createGitlabMrResponse(GitlabMrDetailContent content) {
         boolean exists = mrInfoRepository.existsByGitlabMrIid(content.iid());
-        LocalDateTime lastReviewCreatedAt =
-                mrInfoRepository.findLatestReviewDateByGitlabMrIid(content.iid());
+        LocalDateTime lastReviewCreatedAt = mrInfoRepository.findLatestReviewDateByGitlabMrIid(content.iid());
         return GitlabMrResponse.of(content, exists, lastReviewCreatedAt);
     }
 }

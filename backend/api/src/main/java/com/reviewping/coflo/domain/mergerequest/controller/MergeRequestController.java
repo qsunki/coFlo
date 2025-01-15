@@ -31,11 +31,8 @@ public class MergeRequestController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam String keyword) {
-        GitlabMrPageResponse gitlabMergeRequests =
-                mergeRequestService.getGitlabMergeRequests(
-                        user.getId(),
-                        projectId,
-                        new GitlabMrPageRequest(state, size, page, keyword));
+        GitlabMrPageResponse gitlabMergeRequests = mergeRequestService.getGitlabMergeRequests(
+                user.getId(), projectId, new GitlabMrPageRequest(state, size, page, keyword));
         return ApiSuccessResponse.success(gitlabMergeRequests);
     }
 

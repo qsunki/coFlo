@@ -6,6 +6,5 @@ import java.util.List;
 public interface UserProjectScoreRepositoryCustom {
     List<UserProjectScore> findUserProjectScores(Long userId, Long projectId, int week);
 
-    List<UserProjectScore> findTopUserProjectScores(
-            Long userId, Long projectId, int week, int limit);
+    List<UserProjectScore> findTopUserProjectScores(Long userId, Long projectId, int week, int limit);
 }

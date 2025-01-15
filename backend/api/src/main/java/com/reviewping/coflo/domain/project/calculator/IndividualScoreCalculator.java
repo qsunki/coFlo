@@ -14,8 +14,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class IndividualScoreCalculator
-        extends ScoreCalculator<
-                String, CodeQualityScoreResponse, UserProjectIndividualScoreResponse> {
+        extends ScoreCalculator<String, CodeQualityScoreResponse, UserProjectIndividualScoreResponse> {
 
     public IndividualScoreCalculator(CalculationType calculationType) {
         super(calculationType);
@@ -28,8 +27,7 @@ public class IndividualScoreCalculator
     }
 
     @Override
-    protected Function<Map.Entry<String, List<UserProjectScore>>, CodeQualityScoreResponse>
-            mapper() {
+    protected Function<Map.Entry<String, List<UserProjectScore>>, CodeQualityScoreResponse> mapper() {
         return entry -> {
             String codeQuality = entry.getKey();
             List<UserProjectScore> scoresOfCodeQuality = entry.getValue();
@@ -51,8 +49,7 @@ public class IndividualScoreCalculator
                 cumulativeScores.add(new ScoreOfWeekResponse(weeklyScore.week(), cumulativeScore));
             }
             cumulativeCodeQualityScores.add(
-                    new CodeQualityScoreResponse(
-                            codeQualityScore.codeQualityName(), cumulativeScores));
+                    new CodeQualityScoreResponse(codeQualityScore.codeQualityName(), cumulativeScores));
         }
         return cumulativeCodeQualityScores;
     }
@@ -60,7 +57,6 @@ public class IndividualScoreCalculator
     @Override
     protected UserProjectIndividualScoreResponse response(
             ProjectWeek projectWeek, List<CodeQualityScoreResponse> scores) {
-        return new UserProjectIndividualScoreResponse(
-                projectWeek.startDate(), projectWeek.endDate(), scores);
+        return new UserProjectIndividualScoreResponse(projectWeek.startDate(), projectWeek.endDate(), scores);
     }
 }

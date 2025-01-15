@@ -23,8 +23,7 @@ public class AuthenticationService {
     public Authentication getAuthentication(Long userId) {
         try {
             User user = userRepository.getById(userId);
-            Set<SimpleGrantedAuthority> authorities =
-                    Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+            Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
             return new UsernamePasswordAuthenticationToken(new UserDetails(user), "", authorities);
         } catch (BusinessException e) {
             throw new JwtException(e.getErrorCode().getMessage());

@@ -37,8 +37,7 @@ public class JwtVerifyFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String requestURI = request.getRequestURI();
         String accessToken = cookieUtil.getCookieValue(request, JwtConstants.ACCESS_NAME);
@@ -73,16 +72,10 @@ public class JwtVerifyFilter extends OncePerRequestFilter {
             redisUtil.set(userId, refreshToken, JwtConstants.REFRESH_EXP_TIME);
 
             Cookie accessTokenCookie =
-                    cookieUtil.createCookie(
-                            JwtConstants.ACCESS_NAME,
-                            accessToken,
-                            JwtConstants.ACCESS_EXP_TIME * 60);
+                    cookieUtil.createCookie(JwtConstants.ACCESS_NAME, accessToken, JwtConstants.ACCESS_EXP_TIME * 60);
 
-            Cookie refreshTokenCookie =
-                    cookieUtil.createCookie(
-                            JwtConstants.REFRESH_NAME,
-                            refreshToken,
-                            JwtConstants.REFRESH_EXP_TIME * 60);
+            Cookie refreshTokenCookie = cookieUtil.createCookie(
+                    JwtConstants.REFRESH_NAME, refreshToken, JwtConstants.REFRESH_EXP_TIME * 60);
 
             response.addCookie(accessTokenCookie);
             response.addCookie(refreshTokenCookie);

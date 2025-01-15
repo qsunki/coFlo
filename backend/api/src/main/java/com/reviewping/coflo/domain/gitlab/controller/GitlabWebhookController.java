@@ -19,8 +19,7 @@ public class GitlabWebhookController {
     @PostMapping(value = "/webhook/{projectId}", headers = "X-Gitlab-Event=Merge Request Hook")
     @Operation(summary = "Gitlab webhook 등록 시 사용")
     public ApiResponse<Void> handleGitlabEvent(
-            @PathVariable("projectId") Long projectId,
-            @RequestBody GitlabEventRequest gitlabEventRequest) {
+            @PathVariable("projectId") Long projectId, @RequestBody GitlabEventRequest gitlabEventRequest) {
         gitlabEventHandler.handleMergeRequest(projectId, gitlabEventRequest);
         return ApiSuccessResponse.success();
     }

@@ -16,10 +16,9 @@ public interface GitlabAccountRepository extends JpaRepository<GitlabAccount, Lo
     @Query("SELECT ga FROM GitlabAccount ga WHERE ga.user.id = :userId ORDER BY ga.id ASC")
     Optional<GitlabAccount> findFirstByUserIdOrderByIdAsc(@Param("userId") Long userId);
 
-    @Query(
-            "SELECT ga FROM GitlabAccount ga "
-                    + "JOIN ga.userProjects up "
-                    + "WHERE ga.user.id = :userId AND up.project.id = :projectId")
+    @Query("SELECT ga FROM GitlabAccount ga "
+            + "JOIN ga.userProjects up "
+            + "WHERE ga.user.id = :userId AND up.project.id = :projectId")
     Optional<GitlabAccount> findGitlabAccountByUserIdAndProjectId(
             @Param("userId") Long userId, @Param("projectId") Long projectId);
 

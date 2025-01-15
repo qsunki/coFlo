@@ -15,8 +15,7 @@ public record UserScoreInfoResponse(
         String badgeImageUrl,
         List<ScoreResponse> scores) {
 
-    public static UserScoreInfoResponse of(
-            User user, BadgeCode badgeCode, List<UserProjectScore> scores) {
+    public static UserScoreInfoResponse of(User user, BadgeCode badgeCode, List<UserProjectScore> scores) {
         return UserScoreInfoResponse.builder()
                 .userId(user.getId())
                 .username(user.getUsername())

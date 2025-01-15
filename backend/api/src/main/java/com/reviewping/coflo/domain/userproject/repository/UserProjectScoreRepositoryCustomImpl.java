@@ -22,37 +22,33 @@ public class UserProjectScoreRepositoryCustomImpl implements UserProjectScoreRep
                 .selectFrom(userProjectScore)
                 .join(userProjectScore.userProject, userProject)
                 .join(userProject.gitlabAccount, gitlabAccount)
-                .where(
-                        userProjectScore
-                                .userProject
-                                .project
-                                .id
-                                .eq(projectId)
-                                .and(userProjectScore.week.eq(week))
-                                .and(gitlabAccount.user.id.eq(userId)))
+                .where(userProjectScore
+                        .userProject
+                        .project
+                        .id
+                        .eq(projectId)
+                        .and(userProjectScore.week.eq(week))
+                        .and(gitlabAccount.user.id.eq(userId)))
                 .fetch();
     }
 
     @Override
-    public List<UserProjectScore> findTopUserProjectScores(
-            Long userId, Long projectId, int week, int limit) {
-        List<Long> topUserProjectIds =
-                queryFactory
-                        .select(userProjectScore.userProject.id)
-                        .from(userProjectScore)
-                        .join(userProjectScore.userProject, userProject)
-                        .join(userProject.gitlabAccount, gitlabAccount)
-                        .where(
-                                userProject
-                                        .project
-                                        .id
-                                        .eq(projectId)
-                                        .and(userProjectScore.week.eq(week))
-                                        .and(gitlabAccount.user.id.ne(userId)))
-                        .groupBy(userProjectScore.userProject.id)
-                        .orderBy(userProjectScore.totalScore.sum().desc())
-                        .limit(limit)
-                        .fetch();
+    public List<UserProjectScore> findTopUserProjectScores(Long userId, Long projectId, int week, int limit) {
+        List<Long> topUserProjectIds = queryFactory
+                .select(userProjectScore.userProject.id)
+                .from(userProjectScore)
+                .join(userProjectScore.userProject, userProject)
+                .join(userProject.gitlabAccount, gitlabAccount)
+                .where(userProject
+                        .project
+                        .id
+                        .eq(projectId)
+                        .and(userProjectScore.week.eq(week))
+                        .and(gitlabAccount.user.id.ne(userId)))
+                .groupBy(userProjectScore.userProject.id)
+                .orderBy(userProjectScore.totalScore.sum().desc())
+                .limit(limit)
+                .fetch();
 
         if (topUserProjectIds.isEmpty()) {
             return Collections.emptyList();
@@ -62,12 +58,7 @@ public class UserProjectScoreRepositoryCustomImpl implements UserProjectScoreRep
                 .selectFrom(userProjectScore)
                 .join(userProjectScore.userProject, userProject)
                 .fetchJoin()
-                .where(
-                        userProjectScore
-                                .userProject
-                                .id
-                                .in(topUserProjectIds)
-                                .and(userProjectScore.week.eq(week)))
+                .where(userProjectScore.userProject.id.in(topUserProjectIds).and(userProjectScore.week.eq(week)))
                 .fetch();
     }
 }

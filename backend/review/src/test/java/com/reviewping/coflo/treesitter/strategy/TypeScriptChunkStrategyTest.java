@@ -49,10 +49,9 @@ class TypeScriptChunkStrategyTest {
                 normalize(chunks.get(2).getContent()).contains("class TestClass"),
                 "Chunk 2 should contain 'TestClass' definition.");
         assertEquals(
-                normalize(
-                        "const anonymousFunction = function() {\n"
-                                + "    console.log('This is an anonymous function');\n"
-                                + "};"),
+                normalize("const anonymousFunction = function() {\n"
+                        + "    console.log('This is an anonymous function');\n"
+                        + "};"),
                 normalize(chunks.get(3).getContent()));
         assertEquals(
                 normalize("const simpleArrow = () => console.log('Simple arrow function');"),

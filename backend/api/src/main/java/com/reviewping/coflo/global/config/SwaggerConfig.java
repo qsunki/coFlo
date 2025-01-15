@@ -30,7 +30,10 @@ public class SwaggerConfig {
 
     @Bean
     GroupedOpenApi userApi() {
-        return GroupedOpenApi.builder().group("user").pathsToMatch("/api/users/**").build();
+        return GroupedOpenApi.builder()
+                .group("user")
+                .pathsToMatch("/api/users/**")
+                .build();
     }
 
     @Bean
@@ -59,7 +62,10 @@ public class SwaggerConfig {
 
     @Bean
     GroupedOpenApi projectApi() {
-        return GroupedOpenApi.builder().group("project").pathsToMatch("/api/projects/**").build();
+        return GroupedOpenApi.builder()
+                .group("project")
+                .pathsToMatch("/api/projects/**")
+                .build();
     }
 
     @Bean
@@ -72,16 +78,25 @@ public class SwaggerConfig {
 
     @Bean
     GroupedOpenApi gitlabApi() {
-        return GroupedOpenApi.builder().group("gitlab").pathsToMatch("/api/gitlab/**").build();
+        return GroupedOpenApi.builder()
+                .group("gitlab")
+                .pathsToMatch("/api/gitlab/**")
+                .build();
     }
 
     @Bean
     GroupedOpenApi ReviewApi() {
-        return GroupedOpenApi.builder().group("review").pathsToMatch("/api/reviews/**").build();
+        return GroupedOpenApi.builder()
+                .group("review")
+                .pathsToMatch("/api/reviews/**")
+                .build();
     }
 
     @Bean
     GroupedOpenApi BadgeApi() {
-        return GroupedOpenApi.builder().group("badge").pathsToMatch("/api/badges/**").build();
+        return GroupedOpenApi.builder()
+                .group("badge")
+                .pathsToMatch("/api/badges/**")
+                .build();
     }
 }

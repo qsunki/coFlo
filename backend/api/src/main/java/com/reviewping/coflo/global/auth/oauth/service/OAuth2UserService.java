@@ -32,31 +32,29 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
         Map<String, Object> attributes = oAuth2User.getAttributes();
 
-        String userNameAttributeName =
-                userRequest
-                        .getClientRegistration()
-                        .getProviderDetails()
-                        .getUserInfoEndpoint()
-                        .getUserNameAttributeName();
+        String userNameAttributeName = userRequest
+                .getClientRegistration()
+                .getProviderDetails()
+                .getUserInfoEndpoint()
+                .getUserNameAttributeName();
 
         String provider = userRequest.getClientRegistration().getRegistrationId();
-        OAuth2UserInfo oAuth2UserInfo =
-                new OAuth2UserInfo(attributes, userNameAttributeName, provider);
+        OAuth2UserInfo oAuth2UserInfo = new OAuth2UserInfo(attributes, userNameAttributeName, provider);
 
         Optional<User> bySocialId = userRepository.findByOauth2Id(oAuth2UserInfo.getOauthId());
-        User user =
-                bySocialId.orElseGet(
-                        () ->
-                                saveSocialMember(
-                                        oAuth2UserInfo.getOauthId(),
-                                        Provider.valueOf(provider.toUpperCase())));
+        User user = bySocialId.orElseGet(
+                () -> saveSocialMember(oAuth2UserInfo.getOauthId(), Provider.valueOf(provider.toUpperCase())));
 
         return new UserDetails(user);
     }
 
     public User saveSocialMember(String oauthId, Provider provider) {
         log.info("=== 새로운 소셜 로그인 사용자 추가 ===");
-        User newUser = User.builder().oauth2Id(oauthId).provider(provider).role(Role.USER).build();
+        User newUser = User.builder()
+                .oauth2Id(oauthId)
+                .provider(provider)
+                .role(Role.USER)
+                .build();
         return userRepository.save(newUser);
     }
 }

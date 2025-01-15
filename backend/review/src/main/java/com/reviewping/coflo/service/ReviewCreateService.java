@@ -50,8 +50,7 @@ public class ReviewCreateService {
 
     @ServiceActivator(inputChannel = "reviewRequestChannel")
     public void createOverallReview(String reviewRequestMessage) {
-        ReviewRequestMessage reviewRequest =
-                jsonUtil.fromJson(reviewRequestMessage, new TypeReference<>() {});
+        ReviewRequestMessage reviewRequest = jsonUtil.fromJson(reviewRequestMessage, new TypeReference<>() {});
         Long projectId = reviewRequest.projectId();
         Long branchId = reviewRequest.branchId();
         log.info(
@@ -65,24 +64,18 @@ public class ReviewCreateService {
                 openaiClient.generateEmbedding(reviewRequest.mrContent().mrDiffs());
         float[] embedding = embeddingResponse.data().getFirst().embedding();
         // 2. 참고자료 검색
-        List<ChunkedCode> chunkedCodes =
-                chunkedCodeRepository.retrieveRelevantData(projectId, branchId, 10, embedding);
+        List<ChunkedCode> chunkedCodes = chunkedCodeRepository.retrieveRelevantData(projectId, branchId, 10, embedding);
         List<RetrievalMessage> retrievals =
                 chunkedCodes.stream().map(RetrievalMessage::from).toList();
         // 3. 프롬프트 생성
-        String prompt =
-                buildPrompt(reviewRequest.mrContent(), reviewRequest.customPrompt(), retrievals);
+        String prompt = buildPrompt(reviewRequest.mrContent(), reviewRequest.customPrompt(), retrievals);
         // 4. 리뷰 생성
         ChatCompletionResponse chatCompletionResponse = openaiClient.chat(prompt);
-        String chatMessage = chatCompletionResponse.choices().getFirst().message().content();
+        String chatMessage =
+                chatCompletionResponse.choices().getFirst().message().content();
         // 5. 리뷰 생성 완료
-        ReviewResponseMessage reviewResponse =
-                new ReviewResponseMessage(
-                        reviewRequest.gitlabUrl(),
-                        reviewRequest.mrInfoId(),
-                        0L,
-                        chatMessage,
-                        retrievals);
+        ReviewResponseMessage reviewResponse = new ReviewResponseMessage(
+                reviewRequest.gitlabUrl(), reviewRequest.mrInfoId(), 0L, chatMessage, retrievals);
         log.info(
                 "전체리뷰 생성 완료 - GitLab URL: {}, MR Info ID: {}, 참고자료 수: {}",
                 reviewResponse.gitlabUrl(),
@@ -102,21 +95,18 @@ public class ReviewCreateService {
                 reviewRequest.mrInfoId(),
                 reviewRequest.retrievals().size());
         String prompt =
-                buildPrompt(
-                        reviewRequest.mrContent(),
-                        reviewRequest.customPrompt(),
-                        reviewRequest.retrievals());
+                buildPrompt(reviewRequest.mrContent(), reviewRequest.customPrompt(), reviewRequest.retrievals());
         // 2. 리뷰 생성
         ChatCompletionResponse chatCompletionResponse = openaiClient.chat(prompt);
-        String chatMessage = chatCompletionResponse.choices().getFirst().message().content();
+        String chatMessage =
+                chatCompletionResponse.choices().getFirst().message().content();
         // 3. 리뷰 생성 완료
-        ReviewResponseMessage reviewResponse =
-                new ReviewResponseMessage(
-                        reviewRequest.gitlabUrl(),
-                        reviewRequest.mrInfoId(),
-                        reviewRequest.userId(),
-                        chatMessage,
-                        reviewRequest.retrievals());
+        ReviewResponseMessage reviewResponse = new ReviewResponseMessage(
+                reviewRequest.gitlabUrl(),
+                reviewRequest.mrInfoId(),
+                reviewRequest.userId(),
+                chatMessage,
+                reviewRequest.retrievals());
         log.info(
                 "리뷰 재생성 완료 - GitLab URL: {}, MR Info ID: {}, 참고자료 수: {}",
                 reviewResponse.gitlabUrl(),
@@ -141,29 +131,28 @@ public class ReviewCreateService {
         EmbeddingResponse embeddingResponse = openaiClient.generateEmbedding(reviewRequest.diff());
         float[] embedding = embeddingResponse.data().getFirst().embedding();
         // 2. 참고자료 검색
-        List<ChunkedCode> chunkedCodes =
-                chunkedCodeRepository.retrieveRelevantData(projectId, branchId, 10, embedding);
+        List<ChunkedCode> chunkedCodes = chunkedCodeRepository.retrieveRelevantData(projectId, branchId, 10, embedding);
         List<RetrievalMessage> retrievals =
                 chunkedCodes.stream().map(RetrievalMessage::from).toList();
         // 3. 프롬프트 생성
         String prompt = buildDetailedPrompt(reviewRequest.diff(), retrievals);
         // 4. 리뷰 생성
         ChatCompletionResponse chatCompletionResponse = openaiClient.chat(prompt);
-        String chatMessage = chatCompletionResponse.choices().getFirst().message().content();
+        String chatMessage =
+                chatCompletionResponse.choices().getFirst().message().content();
         // 5. 리뷰 생성 완료
-        DetailedReviewResponseMessage reviewResponse =
-                new DetailedReviewResponseMessage(
-                        projectId,
-                        reviewRequest.mrInfoId(),
-                        branchId,
-                        chatMessage,
-                        reviewRequest.baseSha(),
-                        reviewRequest.headSha(),
-                        reviewRequest.startSha(),
-                        reviewRequest.newPath(),
-                        reviewRequest.oldPath(),
-                        reviewRequest.gitlabUrl(),
-                        retrievals);
+        DetailedReviewResponseMessage reviewResponse = new DetailedReviewResponseMessage(
+                projectId,
+                reviewRequest.mrInfoId(),
+                branchId,
+                chatMessage,
+                reviewRequest.baseSha(),
+                reviewRequest.headSha(),
+                reviewRequest.startSha(),
+                reviewRequest.newPath(),
+                reviewRequest.oldPath(),
+                reviewRequest.gitlabUrl(),
+                retrievals);
         log.info(
                 "상세리뷰 생성 완료 - GitLab URL: {}, MR Info ID: {}, 참고자료 수: {}",
                 reviewResponse.gitlabUrl(),
@@ -173,14 +162,14 @@ public class ReviewCreateService {
     }
 
     private String buildDetailedPrompt(String diff, List<RetrievalMessage> retrievals) {
-        String prompt = promptTemplateRepository.findLatestTemplate(DETAILED_REVIEW_TYPE).content();
+        String prompt = promptTemplateRepository
+                .findLatestTemplate(DETAILED_REVIEW_TYPE)
+                .content();
         return prompt.formatted(retrievals, diff);
     }
 
-    private String buildPrompt(
-            MrContent mrContent, String customPrompt, List<RetrievalMessage> retrievals) {
+    private String buildPrompt(MrContent mrContent, String customPrompt, List<RetrievalMessage> retrievals) {
         String prompt = promptTemplateRepository.findLatestTemplate(REVIEW_TYPE).content();
-        return prompt.formatted(
-                retrievals, mrContent.mrDescription(), mrContent.mrDiffs(), customPrompt);
+        return prompt.formatted(retrievals, mrContent.mrDescription(), mrContent.mrDiffs(), customPrompt);
     }
 }

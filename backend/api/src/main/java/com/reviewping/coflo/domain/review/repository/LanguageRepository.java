@@ -11,7 +11,6 @@ public interface LanguageRepository extends JpaRepository<Language, Long> {
     Optional<Language> findByType(LanguageType type);
 
     default Language getByType(LanguageType type) {
-        return findByType(type)
-                .orElseThrow(() -> new BusinessException(ErrorCode.UNSUPPORTED_LANGUAGE));
+        return findByType(type).orElseThrow(() -> new BusinessException(ErrorCode.UNSUPPORTED_LANGUAGE));
     }
 }

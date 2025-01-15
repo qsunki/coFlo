@@ -4,7 +4,6 @@ import com.reviewping.coflo.domain.userproject.entity.UserProjectScore;
 
 public record ScoreOfWeekResponse(Integer week, Long score) {
     public static ScoreOfWeekResponse of(UserProjectScore userProjectScore) {
-        return new ScoreOfWeekResponse(
-                userProjectScore.getWeek(), userProjectScore.getTotalScore());
+        return new ScoreOfWeekResponse(userProjectScore.getWeek(), userProjectScore.getTotalScore());
     }
 }

@@ -43,8 +43,11 @@ public class UserService {
         gitLabClient.getUserInfo(domain, userToken);
 
         try {
-            gitlabAccountRepository.save(
-                    GitlabAccount.builder().user(user).domain(domain).userToken(userToken).build());
+            gitlabAccountRepository.save(GitlabAccount.builder()
+                    .user(user)
+                    .domain(domain)
+                    .userToken(userToken)
+                    .build());
         } catch (DataIntegrityViolationException e) {
             throw new BusinessException(ErrorCode.USER_TOKEN_ALREADY_EXIST);
         }
@@ -55,10 +58,9 @@ public class UserService {
     @Transactional
     public void synchronizeUserInfo(Long userId) {
         User user = userRepository.getById(userId);
-        GitlabUserInfoContent userInfo =
-                gitLabClient.getUserInfo(
-                        user.getGitlabAccounts().getFirst().getDomain(),
-                        user.getGitlabAccounts().getFirst().getUserToken());
+        GitlabUserInfoContent userInfo = gitLabClient.getUserInfo(
+                user.getGitlabAccounts().getFirst().getDomain(),
+                user.getGitlabAccounts().getFirst().getUserToken());
         user.updateUserInfo(userInfo.username(), userInfo.avatarUrl());
     }
 
@@ -71,8 +73,9 @@ public class UserService {
     public boolean isConnect(Long userId) {
         User user = userRepository.getById(userId);
         List<GitlabAccount> gitlabAccounts = gitlabAccountRepository.findAllByUser(user);
-        List<Long> gitlabAccountIds =
-                gitlabAccounts.stream().map(gitlabAccount -> gitlabAccount.getId()).toList();
+        List<Long> gitlabAccountIds = gitlabAccounts.stream()
+                .map(gitlabAccount -> gitlabAccount.getId())
+                .toList();
         Long connectCount = userProjectRepository.countByGitlabAccountIds(gitlabAccountIds);
 
         return connectCount > 0 ? true : false;

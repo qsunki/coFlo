@@ -25,26 +25,19 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ApiResponse<Map<String, Object>> handleMethodArgumentNotValidException(
             MethodArgumentNotValidException ex) {
-        List<ErrorDetail> errors =
-                ex.getBindingResult().getFieldErrors().stream()
-                        .map(
-                                fieldError ->
-                                        new ErrorDetail(
-                                                fieldError.getField(),
-                                                fieldError.getDefaultMessage()))
-                        .collect(toList());
+        List<ErrorDetail> errors = ex.getBindingResult().getFieldErrors().stream()
+                .map(fieldError -> new ErrorDetail(fieldError.getField(), fieldError.getDefaultMessage()))
+                .collect(toList());
 
         Map<String, Object> data = new HashMap<>();
         data.put("errors", errors);
-        return ApiErrorResponse.error(
-                INVALID_PARAMETER.getCode(), data, INVALID_PARAMETER.getMessage());
+        return ApiErrorResponse.error(INVALID_PARAMETER.getCode(), data, INVALID_PARAMETER.getMessage());
     }
 
     @ExceptionHandler(value = BusinessException.class)
     public ResponseEntity<ApiResponse<Void>> handleBusinessException(BusinessException e) {
         ErrorCode errorCode = e.getErrorCode();
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(ApiErrorResponse.error(errorCode));
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(ApiErrorResponse.error(errorCode));
     }
 
     @ExceptionHandler(value = Exception.class)

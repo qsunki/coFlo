@@ -48,10 +48,7 @@ public class JavaScriptChunkStrategyTest {
                 normalize(chunks.get(2).getContent()).contains("class TestClass"),
                 "Chunk 2 should contain 'TestClass' definition.");
         assertEquals(
-                normalize(
-                        "const functionThree = function() {\n"
-                                + "    console.log('Anonymous Function');\n"
-                                + "};"),
+                normalize("const functionThree = function() {\n" + "    console.log('Anonymous Function');\n" + "};"),
                 normalize(chunks.get(3).getContent()));
 
         assertEquals(jsFile.getName(), chunks.get(0).getFileName());

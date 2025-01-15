@@ -22,21 +22,14 @@ public class ProjectWebhookService {
     public void addGitlabProjectWebhooks(String projectDomain, Project project) {
         String eventWebhookUrl = domainWebhookUrl + "/" + project.getId();
         if (isWebhookAlreadyRegistered(
-                eventWebhookUrl,
-                projectDomain,
-                project.getBotToken(),
-                project.getGitlabProjectId())) {
+                eventWebhookUrl, projectDomain, project.getBotToken(), project.getGitlabProjectId())) {
             return;
         }
         Map<String, Boolean> eventSettings = new HashMap<>();
         eventSettings.put("merge_requests_events", true);
         eventSettings.put("push_events", true);
         gitLabClient.addProjectWebhook(
-                projectDomain,
-                project.getBotToken(),
-                project.getGitlabProjectId(),
-                eventWebhookUrl,
-                eventSettings);
+                projectDomain, project.getBotToken(), project.getGitlabProjectId(), eventWebhookUrl, eventSettings);
     }
 
     private boolean isWebhookAlreadyRegistered(

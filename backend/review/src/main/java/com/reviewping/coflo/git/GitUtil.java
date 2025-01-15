@@ -48,8 +48,7 @@ public class GitUtil {
         }
     }
 
-    private Git executeCloneCommand(String gitUrl, String branch, String token, File localDir)
-            throws GitAPIException {
+    private Git executeCloneCommand(String gitUrl, String branch, String token, File localDir) throws GitAPIException {
         return Git.cloneRepository()
                 .setURI(gitUrl)
                 .setBranch(branch)
@@ -68,12 +67,10 @@ public class GitUtil {
 
     private String pullUpdates(File localDir, String branch, String token) {
         try (Git git = Git.open(localDir)) {
-            PullCommand pullCommand =
-                    git.pull()
-                            .setCredentialsProvider(
-                                    new UsernamePasswordCredentialsProvider("token", token))
-                            .setRemote("origin")
-                            .setRemoteBranchName(branch);
+            PullCommand pullCommand = git.pull()
+                    .setCredentialsProvider(new UsernamePasswordCredentialsProvider("token", token))
+                    .setRemote("origin")
+                    .setRemoteBranchName(branch);
             pullCommand.call();
             return getLastCommitHash(git);
         } catch (Exception e) {
@@ -81,8 +78,7 @@ public class GitUtil {
         }
     }
 
-    public List<GitFileInfo> getUpdatedFileInfos(
-            String repoPath, String oldCommitHash, String newCommitHash) {
+    public List<GitFileInfo> getUpdatedFileInfos(String repoPath, String oldCommitHash, String newCommitHash) {
         try (Repository repository = openRepository(repoPath);
                 RevWalk revWalk = new RevWalk(repository);
                 Git git = new Git(repository)) {
@@ -107,32 +103,27 @@ public class GitUtil {
     }
 
     private Repository openRepository(String repoPath) throws IOException {
-        return new FileRepositoryBuilder().setGitDir(new File(repoPath + "/.git")).build();
+        return new FileRepositoryBuilder()
+                .setGitDir(new File(repoPath + "/.git"))
+                .build();
     }
 
-    private RevCommit getCommit(Repository repository, RevWalk revWalk, String commitHash)
-            throws IOException {
+    private RevCommit getCommit(Repository repository, RevWalk revWalk, String commitHash) throws IOException {
         ObjectId commitId = repository.resolve(commitHash);
         return revWalk.parseCommit(commitId);
     }
 
-    private List<GitFileInfo> getDiffEntries(
-            Git git, Repository repository, RevCommit oldCommit, RevCommit newCommit)
+    private List<GitFileInfo> getDiffEntries(Git git, Repository repository, RevCommit oldCommit, RevCommit newCommit)
             throws IOException, GitAPIException {
-        List<DiffEntry> diffs =
-                git.diff()
-                        .setOldTree(prepareTreeParser(repository, oldCommit))
-                        .setNewTree(prepareTreeParser(repository, newCommit))
-                        .call();
+        List<DiffEntry> diffs = git.diff()
+                .setOldTree(prepareTreeParser(repository, oldCommit))
+                .setNewTree(prepareTreeParser(repository, newCommit))
+                .call();
 
         String repoPath = repository.getDirectory().getParent();
 
         return diffs.stream()
-                .map(
-                        diffEntry ->
-                                new GitFileInfo(
-                                        diffEntry.getChangeType(),
-                                        repoPath + "/" + diffEntry.getNewPath()))
+                .map(diffEntry -> new GitFileInfo(diffEntry.getChangeType(), repoPath + "/" + diffEntry.getNewPath()))
                 .toList();
     }
 
@@ -140,8 +131,7 @@ public class GitUtil {
         return directory.exists() && directory.isDirectory() && directory.list().length > 0;
     }
 
-    private CanonicalTreeParser prepareTreeParser(Repository repository, RevCommit commit)
-            throws IOException {
+    private CanonicalTreeParser prepareTreeParser(Repository repository, RevCommit commit) throws IOException {
         // 커밋에서 트리 객체를 가져오기
         RevTree tree = commit.getTree();
 

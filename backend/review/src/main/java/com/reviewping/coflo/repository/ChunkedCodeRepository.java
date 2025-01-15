@@ -29,10 +29,9 @@ public class ChunkedCodeRepository {
     }
 
     public void saveAllChunkedCodes(Long branchInfoId, List<ChunkedCode> chunkedCodes) {
-        String sql =
-                "INSERT INTO chunked_code (branch_info_id, language, content, file_name,"
-                        + " file_path, embedding) VALUES (:branchInfoId, :language, :content,"
-                        + " :fileName, :filePath, :embedding)";
+        String sql = "INSERT INTO chunked_code (branch_info_id, language, content, file_name,"
+                + " file_path, embedding) VALUES (:branchInfoId, :language, :content,"
+                + " :fileName, :filePath, :embedding)";
         MapSqlParameterSource[] batchValues = new MapSqlParameterSource[chunkedCodes.size()];
 
         try {
@@ -45,40 +44,33 @@ public class ChunkedCodeRepository {
         }
     }
 
-    public List<ChunkedCode> retrieveRelevantData(
-            Long projectId, Long branchId, int count, float[] queryEmbedding) {
-        String sql =
-                "SELECT cc.content, cc.file_name, cc.file_path, cc.embedding, cc.language "
-                        + "FROM chunked_code cc "
-                        + "INNER JOIN branch_info bi ON cc.branch_info_id = bi.id "
-                        + "WHERE bi.project_id = :projectId AND bi.branch_id = :branchId "
-                        + "ORDER BY cc.embedding <=> :embedding::vector "
-                        + "LIMIT :limit";
+    public List<ChunkedCode> retrieveRelevantData(Long projectId, Long branchId, int count, float[] queryEmbedding) {
+        String sql = "SELECT cc.content, cc.file_name, cc.file_path, cc.embedding, cc.language "
+                + "FROM chunked_code cc "
+                + "INNER JOIN branch_info bi ON cc.branch_info_id = bi.id "
+                + "WHERE bi.project_id = :projectId AND bi.branch_id = :branchId "
+                + "ORDER BY cc.embedding <=> :embedding::vector "
+                + "LIMIT :limit";
         PGvector embeddingVector = new PGvector(queryEmbedding);
 
-        MapSqlParameterSource params =
-                new MapSqlParameterSource()
-                        .addValue("projectId", projectId)
-                        .addValue("branchId", branchId)
-                        .addValue("embedding", embeddingVector)
-                        .addValue("limit", count);
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("projectId", projectId)
+                .addValue("branchId", branchId)
+                .addValue("embedding", embeddingVector)
+                .addValue("limit", count);
 
-        return namedParameterJdbcTemplate.query(
-                sql,
-                params,
-                (rs, rowNum) -> {
-                    ChunkedCode chunkedCode =
-                            new ChunkedCode(
-                                    rs.getString("content"),
-                                    rs.getString("file_name"),
-                                    rs.getString("file_path"),
-                                    rs.getString("language"));
-                    Array sqlArray = rs.getArray("embedding");
-                    if (sqlArray != null) {
-                        chunkedCode.addEmbedding(new PGvector(String.valueOf(sqlArray)).toArray());
-                    }
-                    return chunkedCode;
-                });
+        return namedParameterJdbcTemplate.query(sql, params, (rs, rowNum) -> {
+            ChunkedCode chunkedCode = new ChunkedCode(
+                    rs.getString("content"),
+                    rs.getString("file_name"),
+                    rs.getString("file_path"),
+                    rs.getString("language"));
+            Array sqlArray = rs.getArray("embedding");
+            if (sqlArray != null) {
+                chunkedCode.addEmbedding(new PGvector(String.valueOf(sqlArray)).toArray());
+            }
+            return chunkedCode;
+        });
     }
 
     public void removeAllByFilePath(String filePath) {

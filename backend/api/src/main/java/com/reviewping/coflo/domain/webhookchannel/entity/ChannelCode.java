@@ -12,7 +12,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChannelCode {
-    @Id private Long id;
+    @Id
+    private Long id;
 
     @Enumerated(value = EnumType.STRING)
     private ChannelType name;

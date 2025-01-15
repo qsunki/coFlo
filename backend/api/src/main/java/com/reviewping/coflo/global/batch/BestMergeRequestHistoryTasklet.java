@@ -19,8 +19,7 @@ public class BestMergeRequestHistoryTasklet implements Tasklet {
 
     @Override
     @Retryable(retryFor = Exception.class, maxAttempts = 3, backoff = @Backoff(delay = 3600000L))
-    public RepeatStatus execute(
-            @Nonnull StepContribution contribution, @Nonnull ChunkContext chunkContext) {
+    public RepeatStatus execute(@Nonnull StepContribution contribution, @Nonnull ChunkContext chunkContext) {
         bestMrHistoryService.addBestMrHistory();
 
         return RepeatStatus.FINISHED;

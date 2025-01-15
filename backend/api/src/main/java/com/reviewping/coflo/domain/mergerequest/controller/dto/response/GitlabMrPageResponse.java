@@ -6,13 +6,8 @@ import lombok.Builder;
 
 @Builder
 public record GitlabMrPageResponse(
-        List<GitlabMrResponse> gitlabMrList,
-        Long totalElements,
-        Integer totalPages,
-        Boolean isLast,
-        Integer currPage) {
-    public static GitlabMrPageResponse of(
-            List<GitlabMrResponse> gitlabMrList, PageDetail pageDetail) {
+        List<GitlabMrResponse> gitlabMrList, Long totalElements, Integer totalPages, Boolean isLast, Integer currPage) {
+    public static GitlabMrPageResponse of(List<GitlabMrResponse> gitlabMrList, PageDetail pageDetail) {
         return GitlabMrPageResponse.builder()
                 .gitlabMrList(gitlabMrList)
                 .totalElements(pageDetail.totalElements())

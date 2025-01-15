@@ -45,22 +45,20 @@ public class JavaChunkStrategyTest {
                 normalize("private int methodTwo() {\n    int result = 42;\n    return result;\n}"),
                 normalize(chunks.get(1).getContent()));
         assertEquals(
-                normalize(
-                        "public static String staticMethod(String input) {\n"
-                                + "    return \"Hello \" + input;\n"
-                                + "}"),
+                normalize("public static String staticMethod(String input) {\n"
+                        + "    return \"Hello \" + input;\n"
+                        + "}"),
                 normalize(chunks.get(2).getContent()));
         assertEquals(
-                normalize(
-                        "private void methodWithInnerClass() {\n"
-                                + "    class InnerClass {\n"
-                                + "        public void innerMethod() {\n"
-                                + "            System.out.println(\"Inner Method\");\n"
-                                + "        }\n"
-                                + "    }\n"
-                                + "    InnerClass inner = new InnerClass();\n"
-                                + "    inner.innerMethod();\n"
-                                + "}"),
+                normalize("private void methodWithInnerClass() {\n"
+                        + "    class InnerClass {\n"
+                        + "        public void innerMethod() {\n"
+                        + "            System.out.println(\"Inner Method\");\n"
+                        + "        }\n"
+                        + "    }\n"
+                        + "    InnerClass inner = new InnerClass();\n"
+                        + "    inner.innerMethod();\n"
+                        + "}"),
                 normalize(chunks.get(3).getContent()));
 
         assertEquals(javaFile.getName(), chunks.get(0).getFileName());

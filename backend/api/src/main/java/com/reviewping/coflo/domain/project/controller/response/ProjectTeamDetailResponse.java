@@ -11,8 +11,7 @@ public record ProjectTeamDetailResponse(
         Long mergeRequestCount,
         List<LanguageResponse> languages,
         Long aiReviewCount) {
-    public static ProjectTeamDetailResponse of(
-            ProjectInfoContent projectInfoContent, Long aiReviewCount) {
+    public static ProjectTeamDetailResponse of(ProjectInfoContent projectInfoContent, Long aiReviewCount) {
         return ProjectTeamDetailResponse.builder()
                 .commitCount(projectInfoContent.commitCount())
                 .branchCount(projectInfoContent.branchCount())

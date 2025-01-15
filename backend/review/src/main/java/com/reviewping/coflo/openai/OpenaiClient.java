@@ -46,8 +46,7 @@ public class OpenaiClient {
         String body = jsonUtil.toJson(embeddingRequest);
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
         ResponseEntity<EmbeddingResponse> exchange =
-                restTemplate.exchange(
-                        EMBEDDING_URL, HttpMethod.POST, entity, EmbeddingResponse.class);
+                restTemplate.exchange(EMBEDDING_URL, HttpMethod.POST, entity, EmbeddingResponse.class);
         return exchange.getBody();
     }
 
@@ -58,8 +57,7 @@ public class OpenaiClient {
         String body = jsonUtil.toJson(chatCompletionRequest);
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
         ResponseEntity<ChatCompletionResponse> exchange =
-                restTemplate.exchange(
-                        CHAT_URL, HttpMethod.POST, entity, new ParameterizedTypeReference<>() {});
+                restTemplate.exchange(CHAT_URL, HttpMethod.POST, entity, new ParameterizedTypeReference<>() {});
         return exchange.getBody();
     }
 }

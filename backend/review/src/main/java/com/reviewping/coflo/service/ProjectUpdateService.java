@@ -58,8 +58,7 @@ public class ProjectUpdateService {
     @ServiceActivator(inputChannel = "updateChannel")
     @Transactional
     public void updateKnowledgeBase(String updateRequestMessage) {
-        UpdateRequestMessage updateRequest =
-                jsonUtil.fromJson(updateRequestMessage, new TypeReference<>() {});
+        UpdateRequestMessage updateRequest = jsonUtil.fromJson(updateRequestMessage, new TypeReference<>() {});
         // 1. 최신 commit_hash와 last_commit_hash 비교 (없으면 분기해서 init)
         BranchInfo branchInfo = branchRepository.findByBranchId(updateRequest.branchId());
         if (branchInfo == null) {
@@ -71,18 +70,12 @@ public class ProjectUpdateService {
                     updateRequest.token());
             return;
         }
-        String localPath =
-                gitCloneDirectory + updateRequest.projectId() + "/" + updateRequest.branch();
-        String newCommitHash =
-                gitUtil.shallowCloneOrPull(
-                        updateRequest.gitUrl(),
-                        updateRequest.branch(),
-                        updateRequest.token(),
-                        Path.of(localPath));
+        String localPath = gitCloneDirectory + updateRequest.projectId() + "/" + updateRequest.branch();
+        String newCommitHash = gitUtil.shallowCloneOrPull(
+                updateRequest.gitUrl(), updateRequest.branch(), updateRequest.token(), Path.of(localPath));
         if (newCommitHash.equals(branchInfo.lastCommitHash())) {
             log.info(
-                    "리포지토리가 최신입니다. - Project ID: {}, Branch ID: {}, Git URL: {}, Branch: {}, Commit"
-                            + " Hash: {}",
+                    "리포지토리가 최신입니다. - Project ID: {}, Branch ID: {}, Git URL: {}, Branch: {}, Commit" + " Hash: {}",
                     updateRequest.projectId(),
                     updateRequest.branchId(),
                     updateRequest.gitUrl(),
@@ -105,16 +98,11 @@ public class ProjectUpdateService {
         // 수정, 삭제된 파일 정보 삭제
         fileInfos.stream()
                 .filter(gitFileInfo -> gitFileInfo.changeType() != DiffEntry.ChangeType.ADD)
-                .forEach(
-                        gitFileInfo ->
-                                chunkedCodeRepository.removeAllByFilePath(gitFileInfo.filePath()));
+                .forEach(gitFileInfo -> chunkedCodeRepository.removeAllByFilePath(gitFileInfo.filePath()));
         // 수정, 생성된 파일 정보 저장
-        Stream<Path> pathStream =
-                fileInfos.stream()
-                        .filter(
-                                gitFileInfo ->
-                                        gitFileInfo.changeType() != DiffEntry.ChangeType.DELETE)
-                        .map(gitFileInfo -> Paths.get(gitFileInfo.filePath()));
+        Stream<Path> pathStream = fileInfos.stream()
+                .filter(gitFileInfo -> gitFileInfo.changeType() != DiffEntry.ChangeType.DELETE)
+                .map(gitFileInfo -> Paths.get(gitFileInfo.filePath()));
         projectHelper.preprocessAndSave(branchInfo.id(), pathStream);
         // 3. last_commit_hash 업데이트
         branchRepository.updateLastCommitHash(branchInfo.id(), newCommitHash);
@@ -129,8 +117,7 @@ public class ProjectUpdateService {
                 newCommitHash);
     }
 
-    private void initializeKnowledgeBase(
-            Long projectId, Long branchId, String gitUrl, String branch, String token) {
+    private void initializeKnowledgeBase(Long projectId, Long branchId, String gitUrl, String branch, String token) {
         log.info(
                 "지식베이스 초기화 시작 - Project ID: {}, Branch ID: {}, Git URL: {}, Branch: {}",
                 projectId,
@@ -151,8 +138,7 @@ public class ProjectUpdateService {
         }
 
         log.info(
-                "지식베이스 초기화 완료 - Project ID: {}, Branch ID: {}, Git URL: {}, Branch: {}, Last Commit"
-                        + " Hash: {}",
+                "지식베이스 초기화 완료 - Project ID: {}, Branch ID: {}, Git URL: {}, Branch: {}, Last Commit" + " Hash: {}",
                 projectId,
                 branchId,
                 gitUrl,

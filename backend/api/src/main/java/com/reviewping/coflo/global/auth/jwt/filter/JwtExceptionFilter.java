@@ -26,8 +26,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     private final ObjectMapper objectMapper;
 
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
             filterChain.doFilter(request, response);
@@ -39,11 +38,10 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
 
                 ErrorCode errorCode = determineErrorCode(e);
 
-                Map<String, String> error =
-                        Map.of(
-                                "status", "ERROR",
-                                "code", errorCode.getCode(),
-                                "message", errorCode.getMessage());
+                Map<String, String> error = Map.of(
+                        "status", "ERROR",
+                        "code", errorCode.getCode(),
+                        "message", errorCode.getMessage());
                 try {
                     response.getWriter().write(objectMapper.writeValueAsString(error));
                 } catch (IllegalStateException ex) {

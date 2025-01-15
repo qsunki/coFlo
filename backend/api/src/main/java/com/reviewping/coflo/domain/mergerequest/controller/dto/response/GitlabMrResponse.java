@@ -26,9 +26,7 @@ public record GitlabMrResponse(
         Boolean isAiReviewCreated,
         LocalDateTime lastReviewCreatedAt) {
     public static GitlabMrResponse of(
-            GitlabMrDetailContent gitlabMrDetailContent,
-            Boolean isAiReviewCreated,
-            LocalDateTime lastReviewCreatedAt) {
+            GitlabMrDetailContent gitlabMrDetailContent, Boolean isAiReviewCreated, LocalDateTime lastReviewCreatedAt) {
         return GitlabMrResponse.builder()
                 .id(gitlabMrDetailContent.id())
                 .iid(gitlabMrDetailContent.iid())
@@ -66,9 +64,18 @@ public record GitlabMrResponse(
                         gitlabMrDetailContent.reviewers().isEmpty()
                                 ? null
                                 : new GitlabUserInfoContent(
-                                        gitlabMrDetailContent.reviewers().getFirst().username(),
-                                        gitlabMrDetailContent.reviewers().getFirst().name(),
-                                        gitlabMrDetailContent.reviewers().getFirst().avatarUrl()))
+                                        gitlabMrDetailContent
+                                                .reviewers()
+                                                .getFirst()
+                                                .username(),
+                                        gitlabMrDetailContent
+                                                .reviewers()
+                                                .getFirst()
+                                                .name(),
+                                        gitlabMrDetailContent
+                                                .reviewers()
+                                                .getFirst()
+                                                .avatarUrl()))
                 .isAiReviewCreated(isAiReviewCreated)
                 .lastReviewCreatedAt(lastReviewCreatedAt)
                 .build();

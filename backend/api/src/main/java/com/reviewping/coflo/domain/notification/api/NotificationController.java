@@ -34,14 +34,12 @@ public class NotificationController {
     @GetMapping("/unread-counts")
     public ApiResponse<UnreadCountResponse> findUnreadNotificationsCount(
             @AuthUser User user, @RequestParam(name = "projectId") Long projectId) {
-        return ApiSuccessResponse.success(
-                notificationService.unreadNotificationCount(user.getId(), projectId));
+        return ApiSuccessResponse.success(notificationService.unreadNotificationCount(user.getId(), projectId));
     }
 
     @Operation(summary = "알림 확인", description = "자신의 알림을 확인합니다.")
     @PatchMapping("/{notificationId}")
-    public ApiResponse<Void> updateNotification(
-            @PathVariable(name = "notificationId") Long notificationId) {
+    public ApiResponse<Void> updateNotification(@PathVariable(name = "notificationId") Long notificationId) {
         notificationService.updateIsRead(notificationId);
         return ApiSuccessResponse.success();
     }

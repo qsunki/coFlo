@@ -12,11 +12,7 @@ import org.springframework.data.repository.query.Param;
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     Optional<Project> findByGitlabProjectId(Long gitlabProjectId);
 
-    @Query(
-            "SELECT COUNT(r) FROM Review r "
-                    + "JOIN r.mrInfo m "
-                    + "JOIN m.project p "
-                    + "WHERE p.id = :projectId")
+    @Query("SELECT COUNT(r) FROM Review r " + "JOIN r.mrInfo m " + "JOIN m.project p " + "WHERE p.id = :projectId")
     Long findReviewCountByProjectId(@Param("projectId") Long projectId);
 
     default Project getById(Long projectId) {
@@ -24,7 +20,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     }
 
     default Project getByGitlabProjectId(Long gitlabProjectId) {
-        return findByGitlabProjectId(gitlabProjectId)
-                .orElseThrow(() -> new BusinessException(PROJECT_NOT_EXIST));
+        return findByGitlabProjectId(gitlabProjectId).orElseThrow(() -> new BusinessException(PROJECT_NOT_EXIST));
     }
 }

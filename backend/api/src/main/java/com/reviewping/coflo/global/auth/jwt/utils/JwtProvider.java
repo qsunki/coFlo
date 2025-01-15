@@ -19,8 +19,7 @@ public class JwtProvider {
 
     public static String generateToken(Map<String, Object> valueMap, int validTime) {
         try {
-            SecretKey key =
-                    Keys.hmacShaKeyFor(JwtProvider.secretKey.getBytes(StandardCharsets.UTF_8));
+            SecretKey key = Keys.hmacShaKeyFor(JwtProvider.secretKey.getBytes(StandardCharsets.UTF_8));
             return Jwts.builder()
                     .setHeader(Map.of("typ", "JWT"))
                     .setClaims(valueMap)
@@ -36,11 +35,13 @@ public class JwtProvider {
 
     public static Map<String, Object> validateToken(String token) {
         try {
-            SecretKey key =
-                    Keys.hmacShaKeyFor(JwtProvider.secretKey.getBytes(StandardCharsets.UTF_8));
+            SecretKey key = Keys.hmacShaKeyFor(JwtProvider.secretKey.getBytes(StandardCharsets.UTF_8));
 
-            Map<String, Object> claim =
-                    Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+            Map<String, Object> claim = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
 
             return claim;
         } catch (ExpiredJwtException expiredJwtException) {

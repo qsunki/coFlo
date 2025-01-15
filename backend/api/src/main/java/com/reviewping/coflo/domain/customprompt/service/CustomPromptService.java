@@ -26,10 +26,9 @@ public class CustomPromptService {
 
     @Transactional
     public void updateCustomPrompt(User user, String content, Long projectId) {
-        CustomPrompt customPrompt =
-                customPromptRepository
-                        .findByProjectId(projectId)
-                        .orElseThrow(() -> new BusinessException(CUSTOM_PROMPT_NOT_EXIST));
+        CustomPrompt customPrompt = customPromptRepository
+                .findByProjectId(projectId)
+                .orElseThrow(() -> new BusinessException(CUSTOM_PROMPT_NOT_EXIST));
         customPrompt.updateContent(content);
         promptHistoryRepository.save(new PromptHistory(user.getId(), LocalDateTime.now()));
         badgeEventService.eventUpdateCustomPrompt(user);

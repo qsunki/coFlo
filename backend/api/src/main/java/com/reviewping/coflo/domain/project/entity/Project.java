@@ -48,8 +48,7 @@ public class Project extends BaseTimeEntity {
     private List<Branch> branches = new ArrayList<>();
 
     @Builder
-    public Project(
-            String botToken, Long gitlabProjectId, String name, String gitUrl, String fullPath) {
+    public Project(String botToken, Long gitlabProjectId, String name, String gitUrl, String fullPath) {
         this.botToken = botToken;
         this.gitlabProjectId = gitlabProjectId;
         this.name = name;

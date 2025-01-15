@@ -15,7 +15,6 @@ public interface CustomPromptRepository extends JpaRepository<CustomPrompt, Long
     }
 
     default CustomPrompt getByProjectId(Long projectId) {
-        return findByProjectId(projectId)
-                .orElseThrow(() -> new BusinessException(CUSTOM_PROMPT_NOT_EXIST));
+        return findByProjectId(projectId).orElseThrow(() -> new BusinessException(CUSTOM_PROMPT_NOT_EXIST));
     }
 }

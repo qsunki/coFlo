@@ -33,16 +33,13 @@ public class UserProjectService {
     private final BadgeEventService badgeEventService;
 
     @Transactional
-    public Long linkGitlabProject(
-            User user, Long gitlabProjectId, ProjectLinkRequest projectLinkRequest) {
+    public Long linkGitlabProject(User user, Long gitlabProjectId, ProjectLinkRequest projectLinkRequest) {
         GitlabAccount gitlabAccount = gitlabAccountRepository.getFirstByUserId(user.getId());
         Project project = getOrCreateProject(gitlabProjectId, projectLinkRequest, gitlabAccount);
-        UserProject savedProject =
-                userProjectRepository.save(
-                        UserProject.builder()
-                                .project(project)
-                                .gitlabAccount(gitlabAccount)
-                                .build());
+        UserProject savedProject = userProjectRepository.save(UserProject.builder()
+                .project(project)
+                .gitlabAccount(gitlabAccount)
+                .build());
 
         badgeEventService.eventProjectLinkAchievement(user);
         return savedProject.getId();
@@ -52,8 +49,7 @@ public class UserProjectService {
     public Long unlinkGitlabProject(User user, Long gitlabProjectId) {
         GitlabAccount gitlabAccount = gitlabAccountRepository.getFirstByUserId(user.getId());
         Project project = projectRepository.getByGitlabProjectId(gitlabProjectId);
-        UserProject userProject =
-                userProjectRepository.getByProjectAndGitlabAccount(project, gitlabAccount);
+        UserProject userProject = userProjectRepository.getByProjectAndGitlabAccount(project, gitlabAccount);
         userProjectRepository.delete(userProject);
         return userProject.getId();
     }
@@ -82,23 +78,16 @@ public class UserProjectService {
     }
 
     private Project getOrCreateProject(
-            Long gitlabProjectId,
-            ProjectLinkRequest projectLinkRequest,
-            GitlabAccount gitlabAccount) {
+            Long gitlabProjectId, ProjectLinkRequest projectLinkRequest, GitlabAccount gitlabAccount) {
         return projectRepository
                 .findByGitlabProjectId(gitlabProjectId)
-                .orElseGet(
-                        () ->
-                                projectService.addProject(
-                                        gitlabAccount, gitlabProjectId, projectLinkRequest));
+                .orElseGet(() -> projectService.addProject(gitlabAccount, gitlabProjectId, projectLinkRequest));
     }
 
-    private Long getRecentProjectId(
-            Long userId, GitlabAccount gitlabAccount, Boolean hasLinkedProject) {
+    private Long getRecentProjectId(Long userId, GitlabAccount gitlabAccount, Boolean hasLinkedProject) {
         Long recentVisitedProjectId = gitlabAccount.getVisitedProjectId();
         if (hasLinkedProject && recentVisitedProjectId == null) {
-            UserProject userProject =
-                    userProjectRepository.findTopByUserIdOrderByCreatedDateDesc(userId);
+            UserProject userProject = userProjectRepository.findTopByUserIdOrderByCreatedDateDesc(userId);
             recentVisitedProjectId = userProject.getProject().getId();
         }
         return recentVisitedProjectId;

@@ -29,8 +29,7 @@ public class ReviewController {
     @Operation(summary = "리뷰 리스트 조회", description = "MR에 대한 AI 작성 리뷰 리스트 조회")
     public ApiResponse<ReviewResponse> getReviewList(
             @AuthUser User user, @RequestParam Long projectId, @RequestParam Long mergeRequestIid) {
-        ReviewResponse reviewResponse =
-                reviewService.getReviewList(user.getId(), projectId, mergeRequestIid);
+        ReviewResponse reviewResponse = reviewService.getReviewList(user.getId(), projectId, mergeRequestIid);
         return ApiSuccessResponse.success(reviewResponse);
     }
 
@@ -38,17 +37,14 @@ public class ReviewController {
     @Operation(summary = "리뷰 재생성 요청", description = "참고 자료 수정/삭제 후 요청")
     public ApiResponse<Void> regenerateReview(
             @AuthUser User user, @Valid @RequestBody RegenerateReviewRequest request) {
-        reviewService.regenerateReview(
-                user, request.projectId(), request.gitlabMrIid(), request.retrievals());
+        reviewService.regenerateReview(user, request.projectId(), request.gitlabMrIid(), request.retrievals());
         return ApiSuccessResponse.success();
     }
 
     @GetMapping("/{reviewId}/retrievals")
     @Operation(summary = "참고 자료 상세 조회", description = "리뷰에 사용된 참고 자료 조회")
-    public ApiResponse<List<RetrievalDetailResponse>> getRetrievalDetail(
-            @PathVariable Long reviewId) {
-        List<RetrievalDetailResponse> retrievalDetailResponse =
-                reviewService.getRetrievalDetail(reviewId);
+    public ApiResponse<List<RetrievalDetailResponse>> getRetrievalDetail(@PathVariable Long reviewId) {
+        List<RetrievalDetailResponse> retrievalDetailResponse = reviewService.getRetrievalDetail(reviewId);
         return ApiSuccessResponse.success(retrievalDetailResponse);
     }
 }

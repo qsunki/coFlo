@@ -20,12 +20,11 @@ public class BranchRepository {
                 .query(
                         sql,
                         params,
-                        (rs, rowNum) ->
-                                new BranchInfo(
-                                        rs.getLong("id"),
-                                        rs.getString("last_commit_hash"),
-                                        rs.getLong("project_id"),
-                                        rs.getLong("branch_id")))
+                        (rs, rowNum) -> new BranchInfo(
+                                rs.getLong("id"),
+                                rs.getString("last_commit_hash"),
+                                rs.getLong("project_id"),
+                                rs.getLong("branch_id")))
                 .stream()
                 .findFirst()
                 .orElse(null);
@@ -41,15 +40,13 @@ public class BranchRepository {
     }
 
     public void save(Long projectId, Long branchId, String lastCommitHash) {
-        String sql =
-                "INSERT INTO branch_info (project_id, branch_id, last_commit_hash) VALUES"
-                        + " (:projectId, :branchId, :lastCommitHash)";
+        String sql = "INSERT INTO branch_info (project_id, branch_id, last_commit_hash) VALUES"
+                + " (:projectId, :branchId, :lastCommitHash)";
 
-        MapSqlParameterSource params =
-                new MapSqlParameterSource()
-                        .addValue("projectId", projectId)
-                        .addValue("branchId", branchId)
-                        .addValue("lastCommitHash", lastCommitHash);
+        MapSqlParameterSource params = new MapSqlParameterSource()
+                .addValue("projectId", projectId)
+                .addValue("branchId", branchId)
+                .addValue("lastCommitHash", lastCommitHash);
 
         namedParameterJdbcTemplate.update(sql, params);
     }

@@ -23,8 +23,7 @@ public record GitlabMrQueryResponse(
         GitlabUserInfoContent assignee,
         GitlabUserInfoContent reviewer,
         Boolean isAiReviewCreated) {
-    public static GitlabMrQueryResponse of(
-            GitlabMrQueryContent gitlabMrQueryContent, Boolean isAiReviewCreated) {
+    public static GitlabMrQueryResponse of(GitlabMrQueryContent gitlabMrQueryContent, Boolean isAiReviewCreated) {
         return GitlabMrQueryResponse.builder()
                 .id(GraphQlUtil.extractIdFromId(gitlabMrQueryContent.id()))
                 .iid(gitlabMrQueryContent.iid())

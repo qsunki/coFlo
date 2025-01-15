@@ -38,12 +38,11 @@ public class ProjectTeamStatisticsService {
     public ProjectTeamDetailResponse getTeamDetail(User user, Long projectId) {
         GitlabAccount gitlabAccount = gitlabAccountRepository.getFirstByUserId(user.getId());
         Project project = projectRepository.getById(projectId);
-        ProjectInfoContent projectInfoContent =
-                gitLabClient.getProjectInfoDetail(
-                        gitlabAccount.getDomain(),
-                        gitlabAccount.getUserToken(),
-                        project.getGitlabProjectId(),
-                        project.getFullPath());
+        ProjectInfoContent projectInfoContent = gitLabClient.getProjectInfoDetail(
+                gitlabAccount.getDomain(),
+                gitlabAccount.getUserToken(),
+                project.getGitlabProjectId(),
+                project.getFullPath());
         Long aiReviewCount = projectRepository.findReviewCountByProjectId(project.getId());
         return ProjectTeamDetailResponse.of(projectInfoContent, aiReviewCount);
     }
@@ -53,10 +52,8 @@ public class ProjectTeamStatisticsService {
         Project project = projectRepository.getById(projectId);
         LocalDate projectCreatedDate = project.getCreatedDate().toLocalDate();
         int previousWeek = getPreviousWeek(projectCreatedDate);
-        LocalDate[] startAndEndDates =
-                projectDateUtil.calculateWeekStartAndEndDates(projectCreatedDate, previousWeek);
-        List<UserScoreInfoResponse> userScoreInfoResponses =
-                getCurrentUserAndTopUserScore(user, project, previousWeek);
+        LocalDate[] startAndEndDates = projectDateUtil.calculateWeekStartAndEndDates(projectCreatedDate, previousWeek);
+        List<UserScoreInfoResponse> userScoreInfoResponses = getCurrentUserAndTopUserScore(user, project, previousWeek);
         return ProjectTeamRewardResponse.of(startAndEndDates, userScoreInfoResponses);
     }
 
@@ -65,8 +62,7 @@ public class ProjectTeamStatisticsService {
         return Math.max(1, currentWeek - 1);
     }
 
-    private List<UserScoreInfoResponse> getCurrentUserAndTopUserScore(
-            User user, Project project, int previousWeek) {
+    private List<UserScoreInfoResponse> getCurrentUserAndTopUserScore(User user, Project project, int previousWeek) {
         List<UserScoreInfoResponse> totalCurrentUserAndTop5UserScores = new ArrayList<>();
         totalCurrentUserAndTop5UserScores.add(getUserScoreInfo(user, project, previousWeek));
         totalCurrentUserAndTop5UserScores.addAll(getTop5UserScoreInfo(user, project, previousWeek));
@@ -75,32 +71,27 @@ public class ProjectTeamStatisticsService {
 
     private UserScoreInfoResponse getUserScoreInfo(User user, Project project, int week) {
         List<UserProjectScore> userScores =
-                userProjectScoreRepository.findUserProjectScores(
-                        user.getId(), project.getId(), week);
+                userProjectScoreRepository.findUserProjectScores(user.getId(), project.getId(), week);
         return createUserScoreInfoResponse(user, userScores);
     }
 
-    private List<UserScoreInfoResponse> getTop5UserScoreInfo(
-            User user, Project project, int previousWeek) {
+    private List<UserScoreInfoResponse> getTop5UserScoreInfo(User user, Project project, int previousWeek) {
         List<UserProjectScore> topScoreUserProjectsWithScores =
-                userProjectScoreRepository.findTopUserProjectScores(
-                        user.getId(), project.getId(), previousWeek, 5);
+                userProjectScoreRepository.findTopUserProjectScores(user.getId(), project.getId(), previousWeek, 5);
 
         return topScoreUserProjectsWithScores.stream()
                 .collect(Collectors.groupingBy(UserProjectScore::getUserProject))
                 .entrySet()
                 .stream()
-                .map(
-                        entry -> {
-                            User topUser = entry.getKey().getGitlabAccount().getUser();
-                            List<UserProjectScore> scores = entry.getValue();
-                            return createUserScoreInfoResponse(topUser, scores);
-                        })
+                .map(entry -> {
+                    User topUser = entry.getKey().getGitlabAccount().getUser();
+                    List<UserProjectScore> scores = entry.getValue();
+                    return createUserScoreInfoResponse(topUser, scores);
+                })
                 .toList();
     }
 
-    private UserScoreInfoResponse createUserScoreInfoResponse(
-            User user, List<UserProjectScore> previousWeekScores) {
+    private UserScoreInfoResponse createUserScoreInfoResponse(User user, List<UserProjectScore> previousWeekScores) {
         BadgeCode badgeCode = user.getMainBadgeCode();
         return UserScoreInfoResponse.of(user, badgeCode, previousWeekScores);
     }

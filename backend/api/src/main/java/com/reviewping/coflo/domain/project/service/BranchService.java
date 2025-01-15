@@ -26,25 +26,17 @@ public class BranchService {
     }
 
     private List<Branch> saveBranches(ProjectLinkRequest projectLinkRequest, Project project) {
-        List<Branch> branches =
-                projectLinkRequest.branches().stream()
-                        .map(branchName -> new Branch(project, branchName))
-                        .toList();
+        List<Branch> branches = projectLinkRequest.branches().stream()
+                .map(branchName -> new Branch(project, branchName))
+                .toList();
         return branchRepository.saveAll(branches);
     }
 
     private void setupProjectIntegration(Project project, List<Branch> branches) {
-        branches.forEach(
-                branch -> {
-                    UpdateRequestMessage initRequest =
-                            new UpdateRequestMessage(
-                                    project.getId(),
-                                    branch.getId(),
-                                    project.getGitUrl(),
-                                    branch.getName(),
-                                    project.getBotToken(),
-                                    "");
-                    redisGateway.sendUpdateRequest(initRequest);
-                });
+        branches.forEach(branch -> {
+            UpdateRequestMessage initRequest = new UpdateRequestMessage(
+                    project.getId(), branch.getId(), project.getGitUrl(), branch.getName(), project.getBotToken(), "");
+            redisGateway.sendUpdateRequest(initRequest);
+        });
     }
 }

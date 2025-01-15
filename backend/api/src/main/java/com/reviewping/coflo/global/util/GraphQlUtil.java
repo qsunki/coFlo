@@ -63,12 +63,10 @@ public class GraphQlUtil {
     private String createPagination(GitlabSearchRequest gitlabSearchRequest) {
         if (!gitlabSearchRequest.startCursor().isEmpty()) {
             return String.format(
-                    ", before: \"%s\", last: %d",
-                    gitlabSearchRequest.startCursor(), gitlabSearchRequest.size());
+                    ", before: \"%s\", last: %d", gitlabSearchRequest.startCursor(), gitlabSearchRequest.size());
         } else if (!gitlabSearchRequest.endCursor().isEmpty()) {
             return String.format(
-                    ", after: \"%s\", first: %d",
-                    gitlabSearchRequest.endCursor(), gitlabSearchRequest.size());
+                    ", after: \"%s\", first: %d", gitlabSearchRequest.endCursor(), gitlabSearchRequest.size());
         } else {
             return String.format(", first: %d", gitlabSearchRequest.size());
         }
@@ -116,12 +114,11 @@ public class GraphQlUtil {
     }
 
     public String createMergeRequestsQuery(String fullPath, List<Long> gitlabMrIids) {
-        String iids =
-                gitlabMrIids.stream()
-                        .map(String::valueOf)
-                        .reduce((a, b) -> a + "\", \"" + b)
-                        .map(iid -> "[\"" + iid + "\"]")
-                        .orElse("[]");
+        String iids = gitlabMrIids.stream()
+                .map(String::valueOf)
+                .reduce((a, b) -> a + "\", \"" + b)
+                .map(iid -> "[\"" + iid + "\"]")
+                .orElse("[]");
 
         return String.format(
                 "query { "

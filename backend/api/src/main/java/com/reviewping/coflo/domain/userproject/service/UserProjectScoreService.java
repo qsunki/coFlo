@@ -41,29 +41,23 @@ public class UserProjectScoreService {
     @PostConstruct
     private void init() {
         List<CodeQualityCode> codeQualityCodes = codeQualityCodeRepository.findAll();
-        codeQualityCodeMap =
-                codeQualityCodes.stream()
-                        .collect(Collectors.toMap(CodeQualityCode::getId, code -> code));
+        codeQualityCodeMap = codeQualityCodes.stream().collect(Collectors.toMap(CodeQualityCode::getId, code -> code));
     }
 
     @Transactional
     public void saveUserProjectScores(String username, MrInfo mrInfo, LocalDate currentDate) {
         UserProject userProject = getUserProject(username, mrInfo.getProject());
-        int currentWeek =
-                projectDateUtil.calculateWeekNumber(
-                        mrInfo.getProject().getCreatedDate().toLocalDate(), currentDate);
+        int currentWeek = projectDateUtil.calculateWeekNumber(
+                mrInfo.getProject().getCreatedDate().toLocalDate(), currentDate);
 
         Map<Long, Integer> scoresMap = initializeScoresMap(mrInfo);
-        scoresMap.forEach(
-                (codeQualityCodeId, score) ->
-                        updateOrSaveUserProjectScore(
-                                userProject, currentWeek, codeQualityCodeId, score));
+        scoresMap.forEach((codeQualityCodeId, score) ->
+                updateOrSaveUserProjectScore(userProject, currentWeek, codeQualityCodeId, score));
     }
 
     private UserProject getUserProject(String username, Project project) {
         User user = userRepository.getByUsername(username);
-        GitlabAccount gitlabAccount =
-                gitlabAccountRepository.getByUserIdAndProjectId(user.getId(), project.getId());
+        GitlabAccount gitlabAccount = gitlabAccountRepository.getByUserIdAndProjectId(user.getId(), project.getId());
         return userProjectRepository.getByProjectAndGitlabAccount(project, gitlabAccount);
     }
 
@@ -81,8 +75,7 @@ public class UserProjectScoreService {
     private void updateOrSaveUserProjectScore(
             UserProject userProject, int currentWeek, Long codeQualityCodeId, Integer score) {
         Optional<UserProjectScore> optionalScore =
-                userProjectScoreRepository.findScoreByProjectWeekAndCode(
-                        userProject, currentWeek, codeQualityCodeId);
+                userProjectScoreRepository.findScoreByProjectWeekAndCode(userProject, currentWeek, codeQualityCodeId);
 
         if (optionalScore.isPresent()) {
             UserProjectScore existingScore = optionalScore.get();
@@ -94,13 +87,12 @@ public class UserProjectScoreService {
 
     private void createNewUserProjectScore(
             UserProject userProject, int currentWeek, Long codeQualityCodeId, long score) {
-        UserProjectScore newScore =
-                UserProjectScore.builder()
-                        .userProject(userProject)
-                        .codeQualityCode(codeQualityCodeMap.get(codeQualityCodeId))
-                        .week(currentWeek)
-                        .totalScore(score)
-                        .build();
+        UserProjectScore newScore = UserProjectScore.builder()
+                .userProject(userProject)
+                .codeQualityCode(codeQualityCodeMap.get(codeQualityCodeId))
+                .week(currentWeek)
+                .totalScore(score)
+                .build();
         userProjectScoreRepository.save(newScore);
     }
 }

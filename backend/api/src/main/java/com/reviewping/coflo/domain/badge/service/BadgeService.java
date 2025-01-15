@@ -40,15 +40,12 @@ public class BadgeService {
 
     private List<BadgeDetail> getBadgeDetails(User user) {
         return badgeCodeRepository.findAll().stream()
-                .map(
-                        badgeCode ->
-                                new BadgeDetail(
-                                        badgeCode.getId(),
-                                        badgeCode.getName(),
-                                        badgeCode.getDescription(),
-                                        badgeCode.getImageUrl(),
-                                        userBadgeRepository.existsByUserAndBadgeCode(
-                                                user, badgeCode)))
+                .map(badgeCode -> new BadgeDetail(
+                        badgeCode.getId(),
+                        badgeCode.getName(),
+                        badgeCode.getDescription(),
+                        badgeCode.getImageUrl(),
+                        userBadgeRepository.existsByUserAndBadgeCode(user, badgeCode)))
                 .toList();
     }
 }

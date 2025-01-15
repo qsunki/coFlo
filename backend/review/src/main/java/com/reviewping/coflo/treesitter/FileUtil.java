@@ -16,6 +16,8 @@ public class FileUtil {
     public static String getFileExtension(File file) {
         String fileName = file.getName();
         int lastIndexOfDot = fileName.lastIndexOf(".");
-        return (lastIndexOfDot == -1) ? "" : fileName.substring(lastIndexOfDot + 1).toLowerCase();
+        return (lastIndexOfDot == -1)
+                ? ""
+                : fileName.substring(lastIndexOfDot + 1).toLowerCase();
     }
 }

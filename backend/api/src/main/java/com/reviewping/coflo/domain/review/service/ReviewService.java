@@ -72,15 +72,17 @@ public class ReviewService {
     public void handleReviewResponse(String reviewResponseMessage) {
         ReviewResponseMessage reviewResponse;
         try {
-            reviewResponse =
-                    objectMapper.readValue(reviewResponseMessage, ReviewResponseMessage.class);
+            reviewResponse = objectMapper.readValue(reviewResponseMessage, ReviewResponseMessage.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
         MrInfo mrInfo = mrInfoRepository.getById(reviewResponse.mrInfoId());
         Project project = mrInfo.getProject();
 
-        Review review = Review.builder().mrInfo(mrInfo).content(reviewResponse.content()).build();
+        Review review = Review.builder()
+                .mrInfo(mrInfo)
+                .content(reviewResponse.content())
+                .build();
         Review savedReview = reviewRepository.save(review);
         log.debug("리뷰가 저장되었습니다. Saved Review Id: {}", savedReview.getId());
         int savedRetrievalCount = saveRetrievals(reviewResponse.retrievals(), review);
@@ -97,10 +99,8 @@ public class ReviewService {
                 savedRetrievalCount);
 
         if (reviewResponse.userId() != 0L) {
-            UserProject userProject =
-                    notificationService.getUserProject(reviewResponse.userId(), project.getId());
-            notificationService.create(
-                    reviewResponse.userId(), userProject, AI_REVIEW_COMPLETE_MESSAGE);
+            UserProject userProject = notificationService.getUserProject(reviewResponse.userId(), project.getId());
+            notificationService.create(reviewResponse.userId(), userProject, AI_REVIEW_COMPLETE_MESSAGE);
         }
 
         if (!project.getWebhookChannels().isEmpty()) {
@@ -113,9 +113,7 @@ public class ReviewService {
     public void handleDetailedReviewResponse(String detailedReviewResponseMessage) {
         DetailedReviewResponseMessage reviewResponse;
         try {
-            reviewResponse =
-                    objectMapper.readValue(
-                            detailedReviewResponseMessage, DetailedReviewResponseMessage.class);
+            reviewResponse = objectMapper.readValue(detailedReviewResponseMessage, DetailedReviewResponseMessage.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -123,7 +121,10 @@ public class ReviewService {
         MrInfo mrInfo = mrInfoRepository.getById(reviewResponse.mrInfoId());
         Project project = mrInfo.getProject();
 
-        Review review = Review.builder().mrInfo(mrInfo).content(reviewResponse.content()).build();
+        Review review = Review.builder()
+                .mrInfo(mrInfo)
+                .content(reviewResponse.content())
+                .build();
         Review savedReview = reviewRepository.save(review);
         log.debug("상세 리뷰가 저장되었습니다. Saved Review Id: {}", savedReview.getId());
         int savedRetrievalCount = saveRetrievals(reviewResponse.retrievals(), review);
@@ -150,8 +151,7 @@ public class ReviewService {
     public void handleEvalResponse(String mrEvalResponseMessage) {
         MrEvalResponseMessage evalResponse;
         try {
-            evalResponse =
-                    objectMapper.readValue(mrEvalResponseMessage, MrEvalResponseMessage.class);
+            evalResponse = objectMapper.readValue(mrEvalResponseMessage, MrEvalResponseMessage.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -184,22 +184,15 @@ public class ReviewService {
         Project project = projectRepository.getReferenceById(projectId);
         MrInfo mrInfo = mrInfoRepository.save(new MrInfo(project, iid, gitlabCreatedDate));
         // 2. 변경사항가져오기
-        List<GitlabMrDiffsContent> mrDiffs =
-                gitLabClient.getMrDiffs(gitlabUrl, token, gitlabProjectId, iid);
+        List<GitlabMrDiffsContent> mrDiffs = gitLabClient.getMrDiffs(gitlabUrl, token, gitlabProjectId, iid);
         // 3. 커스텀프롬프트 가져오기
         CustomPrompt customPrompt = customPromptRepository.getByProjectId(projectId);
         // 4. projectId와 targetBranch로 브랜치 id 가져오기
         Branch branch = branchRepository.getByNameAndProject(targetBranch, project);
         // 5. 전체 리뷰 생성 요청
         MrContent mrContent = new MrContent(mrDescription, mrDiffs.toString());
-        ReviewRequestMessage reviewRequest =
-                new ReviewRequestMessage(
-                        projectId,
-                        mrInfo.getId(),
-                        branch.getId(),
-                        mrContent,
-                        customPrompt.getContent(),
-                        gitlabUrl);
+        ReviewRequestMessage reviewRequest = new ReviewRequestMessage(
+                projectId, mrInfo.getId(), branch.getId(), mrContent, customPrompt.getContent(), gitlabUrl);
         redisGateway.sendDetailedReviewRequest(reviewRequest);
         // 6. 리뷰 평가 요청
         MrEvalRequestMessage evalRequest =
@@ -208,54 +201,45 @@ public class ReviewService {
     }
 
     @Transactional
-    public void regenerateReview(
-            User user, Long projectId, Long gitlabMrIid, List<RetrievalContent> retrievals) {
+    public void regenerateReview(User user, Long projectId, Long gitlabMrIid, List<RetrievalContent> retrievals) {
         MrInfo mrInfo = mrInfoRepository.getByProjectIdAndGitlabMrIid(projectId, gitlabMrIid);
         Project project = mrInfo.getProject();
 
-        GitlabAccount gitlabAccount =
-                gitlabAccountRepository.getByUserIdAndProjectId(user.getId(), project.getId());
+        GitlabAccount gitlabAccount = gitlabAccountRepository.getByUserIdAndProjectId(user.getId(), project.getId());
 
-        List<GitlabMrDiffsContent> mrDiffs =
-                gitLabClient.getMrDiffs(
+        List<GitlabMrDiffsContent> mrDiffs = gitLabClient.getMrDiffs(
+                gitlabAccount.getDomain(),
+                gitlabAccount.getUserToken(),
+                project.getGitlabProjectId(),
+                mrInfo.getGitlabMrIid());
+
+        GitlabMrQueryResponse gitlabMrResponse = GitlabMrQueryResponse.of(
+                gitLabClient.getSingleMergeRequest(
                         gitlabAccount.getDomain(),
                         gitlabAccount.getUserToken(),
-                        project.getGitlabProjectId(),
-                        mrInfo.getGitlabMrIid());
-
-        GitlabMrQueryResponse gitlabMrResponse =
-                GitlabMrQueryResponse.of(
-                        gitLabClient.getSingleMergeRequest(
-                                gitlabAccount.getDomain(),
-                                gitlabAccount.getUserToken(),
-                                project.getFullPath(),
-                                mrInfo.getGitlabMrIid()),
-                        true);
+                        project.getFullPath(),
+                        mrInfo.getGitlabMrIid()),
+                true);
 
         CustomPrompt customPrompt = customPromptRepository.getByProjectId(project.getId());
         MrContent mrContent = new MrContent(gitlabMrResponse.description(), mrDiffs.toString());
-        Branch branch =
-                branchRepository.getByNameAndProject(gitlabMrResponse.targetBranch(), project);
+        Branch branch = branchRepository.getByNameAndProject(gitlabMrResponse.targetBranch(), project);
 
         log.info("send review request userId: {}", user.getId());
-        ReviewRegenerateRequestMessage regenerateRequest =
-                new ReviewRegenerateRequestMessage(
-                        project.getId(),
-                        mrInfo.getId(),
-                        branch.getId(),
-                        user.getId(),
-                        mrContent,
-                        customPrompt.getContent(),
-                        gitlabAccount.getDomain(),
-                        retrievals.stream()
-                                .map(
-                                        retrieval ->
-                                                new RetrievalMessage(
-                                                        retrieval.content(),
-                                                        retrieval.fileName(),
-                                                        LanguageType.valueOf(retrieval.language())
-                                                                .getType()))
-                                .toList());
+        ReviewRegenerateRequestMessage regenerateRequest = new ReviewRegenerateRequestMessage(
+                project.getId(),
+                mrInfo.getId(),
+                branch.getId(),
+                user.getId(),
+                mrContent,
+                customPrompt.getContent(),
+                gitlabAccount.getDomain(),
+                retrievals.stream()
+                        .map(retrieval -> new RetrievalMessage(
+                                retrieval.content(),
+                                retrieval.fileName(),
+                                LanguageType.valueOf(retrieval.language()).getType()))
+                        .toList());
 
         badgeEventService.eventFirstAiReviewRegenerate(user);
         redisGateway.sendReviewRegenerateRequest(regenerateRequest);
@@ -264,52 +248,44 @@ public class ReviewService {
     @Transactional
     public ReviewResponse getReviewList(Long userId, Long projectId, Long mergeRequestIid) {
         MrInfo mrInfo = mrInfoRepository.getByProjectIdAndGitlabMrIid(projectId, mergeRequestIid);
-        GitlabAccount gitlabAccount =
-                gitlabAccountRepository.getByUserIdAndProjectId(userId, projectId);
+        GitlabAccount gitlabAccount = gitlabAccountRepository.getByUserIdAndProjectId(userId, projectId);
         Project project = projectRepository.getById(projectId);
-        GitlabMrQueryResponse gitlabMrQueryContent =
-                GitlabMrQueryResponse.of(
-                        gitLabClient.getSingleMergeRequest(
-                                gitlabAccount.getDomain(),
-                                gitlabAccount.getUserToken(),
-                                project.getFullPath(),
-                                mergeRequestIid),
-                        true);
+        GitlabMrQueryResponse gitlabMrQueryContent = GitlabMrQueryResponse.of(
+                gitLabClient.getSingleMergeRequest(
+                        gitlabAccount.getDomain(),
+                        gitlabAccount.getUserToken(),
+                        project.getFullPath(),
+                        mergeRequestIid),
+                true);
         String gitlabMrDetailUrl = getGitlabMrDetailUrl(gitlabAccount, project, mrInfo);
-        List<ReviewDetailResponse> reviews =
-                reviewRepository.findByMrInfoOrderByCreatedDateDesc(mrInfo).stream()
-                        .map(ReviewDetailResponse::from)
-                        .toList();
+        List<ReviewDetailResponse> reviews = reviewRepository.findByMrInfoOrderByCreatedDateDesc(mrInfo).stream()
+                .map(ReviewDetailResponse::from)
+                .toList();
         return ReviewResponse.of(gitlabMrQueryContent, reviews, gitlabMrDetailUrl);
     }
 
     public List<RetrievalDetailResponse> getRetrievalDetail(Long reviewId) {
         Review review = reviewRepository.getById(reviewId);
-        return review.getRetrievals().stream().map(RetrievalDetailResponse::from).toList();
+        return review.getRetrievals().stream()
+                .map(RetrievalDetailResponse::from)
+                .toList();
     }
 
     private int saveRetrievals(List<RetrievalMessage> retrievalMessages, Review review) {
-        List<Retrieval> retrievals =
-                retrievalMessages.stream()
-                        .map(
-                                message ->
-                                        Retrieval.builder()
-                                                .review(review)
-                                                .fileName(message.fileName())
-                                                .content(message.content())
-                                                .language(
-                                                        languageRepository.getByType(
-                                                                LanguageType.fromType(
-                                                                        message.language())))
-                                                .build())
-                        .toList();
+        List<Retrieval> retrievals = retrievalMessages.stream()
+                .map(message -> Retrieval.builder()
+                        .review(review)
+                        .fileName(message.fileName())
+                        .content(message.content())
+                        .language(languageRepository.getByType(LanguageType.fromType(message.language())))
+                        .build())
+                .toList();
         List<Retrieval> saved = retrievalRepository.saveAll(retrievals);
         log.debug("참고자료가 저장되었습니다. Saved Retrieval Count: {}", saved.size());
         return saved.size();
     }
 
-    private String getGitlabMrDetailUrl(
-            GitlabAccount gitlabAccount, Project project, MrInfo mrInfo) {
+    private String getGitlabMrDetailUrl(GitlabAccount gitlabAccount, Project project, MrInfo mrInfo) {
         return String.format(
                 "https://%s/%s/-/merge_requests/%d",
                 gitlabAccount.getDomain(), project.getFullPath(), mrInfo.getGitlabMrIid());

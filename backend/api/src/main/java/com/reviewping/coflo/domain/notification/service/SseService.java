@@ -38,11 +38,10 @@ public class SseService {
             try {
                 String jsonData = objectMapper.writeValueAsString(data);
                 log.info("Sending data: " + jsonData);
-                emitter.send(
-                        SseEmitter.event()
-                                .id(String.valueOf(id))
-                                .name("notification")
-                                .data(jsonData));
+                emitter.send(SseEmitter.event()
+                        .id(String.valueOf(id))
+                        .name("notification")
+                        .data(jsonData));
             } catch (JsonProcessingException e) {
                 throw new BusinessException(SSE_DATA_SERIALIZATION_ERROR);
             } catch (IOException e) {
@@ -58,22 +57,19 @@ public class SseService {
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
         emitterRepository.save(id, emitter);
 
-        emitter.onCompletion(
-                () -> {
-                    log.info("SSE connection completed for id: " + id);
-                    emitterRepository.deleteById(id);
-                });
-        emitter.onTimeout(
-                () -> {
-                    log.info("SSE connection timed out for id: " + id);
-                    emitter.complete();
-                    emitterRepository.deleteById(id);
-                });
-        emitter.onError(
-                (e) -> {
-                    log.error("SSE connection error: ", e);
-                    emitter.completeWithError(e);
-                });
+        emitter.onCompletion(() -> {
+            log.info("SSE connection completed for id: " + id);
+            emitterRepository.deleteById(id);
+        });
+        emitter.onTimeout(() -> {
+            log.info("SSE connection timed out for id: " + id);
+            emitter.complete();
+            emitterRepository.deleteById(id);
+        });
+        emitter.onError((e) -> {
+            log.error("SSE connection error: ", e);
+            emitter.completeWithError(e);
+        });
 
         return emitter;
     }

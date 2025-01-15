@@ -33,9 +33,7 @@ public class ProjectService {
 
     @Transactional
     public Project addProject(
-            GitlabAccount gitlabAccount,
-            Long gitlabProjectId,
-            ProjectLinkRequest projectLinkRequest) {
+            GitlabAccount gitlabAccount, Long gitlabProjectId, ProjectLinkRequest projectLinkRequest) {
         Project project = createAndSaveProject(gitlabAccount, gitlabProjectId, projectLinkRequest);
         saveBasicCustomPrompt(project);
         branchService.addBranches(projectLinkRequest, project);
@@ -44,20 +42,16 @@ public class ProjectService {
     }
 
     private Project createAndSaveProject(
-            GitlabAccount gitlabAccount,
-            Long gitlabProjectId,
-            ProjectLinkRequest projectLinkRequest) {
+            GitlabAccount gitlabAccount, Long gitlabProjectId, ProjectLinkRequest projectLinkRequest) {
         GitlabProjectDetailContent gitlabProject =
-                getProjectContentByBotToken(
-                        gitlabAccount.getDomain(), gitlabProjectId, projectLinkRequest);
-        Project project =
-                Project.builder()
-                        .gitlabProjectId(gitlabProjectId)
-                        .botToken(projectLinkRequest.botToken())
-                        .name(gitlabProject.name())
-                        .gitUrl(gitlabProject.httpUrlToRepo())
-                        .fullPath(gitlabProject.fullPath())
-                        .build();
+                getProjectContentByBotToken(gitlabAccount.getDomain(), gitlabProjectId, projectLinkRequest);
+        Project project = Project.builder()
+                .gitlabProjectId(gitlabProjectId)
+                .botToken(projectLinkRequest.botToken())
+                .name(gitlabProject.name())
+                .gitUrl(gitlabProject.httpUrlToRepo())
+                .fullPath(gitlabProject.fullPath())
+                .build();
         return projectRepository.save(project);
     }
 
@@ -66,8 +60,7 @@ public class ProjectService {
         if (projectLinkRequest == null || projectLinkRequest.botToken() == null) {
             throw new BusinessException(LINK_BOT_TOKEN_NOT_EXIST);
         }
-        return gitLabClient.getSingleProject(
-                domain, projectLinkRequest.botToken(), gitlabProjectId);
+        return gitLabClient.getSingleProject(domain, projectLinkRequest.botToken(), gitlabProjectId);
     }
 
     private void saveBasicCustomPrompt(Project project) {
@@ -77,11 +70,8 @@ public class ProjectService {
 
     public ProjectLabelResponse getProjectLabels(Long userId, Long projectId) {
         Project project = projectRepository.getById(projectId);
-        GitlabAccount gitlabAccount =
-                gitlabAccountRepository.getByUserIdAndProjectId(userId, projectId);
+        GitlabAccount gitlabAccount = gitlabAccountRepository.getByUserIdAndProjectId(userId, projectId);
         return gitLabClient.getProjectLabels(
-                gitlabAccount.getDomain(),
-                gitlabAccount.getUserToken(),
-                project.getGitlabProjectId());
+                gitlabAccount.getDomain(), gitlabAccount.getUserToken(), project.getGitlabProjectId());
     }
 }

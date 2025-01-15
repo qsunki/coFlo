@@ -17,10 +17,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class UserProjectServiceTest {
 
-    @Mock private UserProjectRepository userProjectRepository;
-    @Mock private GitlabAccountRepository gitlabAccountRepository;
+    @Mock
+    private UserProjectRepository userProjectRepository;
 
-    @InjectMocks private UserProjectService userProjectService;
+    @Mock
+    private GitlabAccountRepository gitlabAccountRepository;
+
+    @InjectMocks
+    private UserProjectService userProjectService;
 
     @Test
     @DisplayName("사용자가 연동된 프로젝트가 있을 때, true를 반환한다.")
