@@ -44,4 +44,4 @@ env
 spotless_check_output.txt
 
 ### queryDsl ###
-src/main/generated/
+api/src/main/generated/
