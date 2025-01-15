@@ -1,1 +1,4 @@
 rootProject.name = 'coflo'
+
+include 'api'
+include 'review'

@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @Disabled("test용 redis 미구축")
-class CofloaiApplicationTests {
+class CofloReviewApplicationTests {
 
     @Test
     void contextLoads() {}
