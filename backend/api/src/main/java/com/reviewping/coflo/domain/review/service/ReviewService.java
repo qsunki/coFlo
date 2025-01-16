@@ -2,7 +2,6 @@ package com.reviewping.coflo.domain.review.service;
 
 import static com.reviewping.coflo.message.ReviewRequestMessage.*;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reviewping.coflo.domain.badge.service.BadgeEventService;
 import com.reviewping.coflo.domain.customprompt.entity.CustomPrompt;
@@ -70,13 +69,7 @@ public class ReviewService {
 
     @Transactional
     @ServiceActivator(inputChannel = "reviewResponseChannel")
-    public void handleReviewResponse(String reviewResponseMessage) {
-        ReviewResponseMessage reviewResponse;
-        try {
-            reviewResponse = objectMapper.readValue(reviewResponseMessage, ReviewResponseMessage.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+    public void handleReviewResponse(ReviewResponseMessage reviewResponse) {
         MrInfo mrInfo = mrInfoRepository.getById(reviewResponse.mrInfoId());
         Project project = mrInfo.getProject();
 
@@ -111,36 +104,30 @@ public class ReviewService {
 
     @Transactional
     @ServiceActivator(inputChannel = "detailedReviewResponseChannel")
-    public void handleDetailedReviewResponse(String detailedReviewResponseMessage) {
-        DetailedReviewResponseMessage reviewResponse;
-        try {
-            reviewResponse = objectMapper.readValue(detailedReviewResponseMessage, DetailedReviewResponseMessage.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        log.info("상세리뷰 응답: {}", reviewResponse.content());
-        MrInfo mrInfo = mrInfoRepository.getById(reviewResponse.mrInfoId());
+    public void handleDetailedReviewResponse(DetailedReviewResponseMessage detailedReviewResponse) {
+        log.info("상세리뷰 응답: {}", detailedReviewResponse.content());
+        MrInfo mrInfo = mrInfoRepository.getById(detailedReviewResponse.mrInfoId());
         Project project = mrInfo.getProject();
 
         Review review = Review.builder()
                 .mrInfo(mrInfo)
-                .content(reviewResponse.content())
+                .content(detailedReviewResponse.content())
                 .build();
         Review savedReview = reviewRepository.save(review);
         log.debug("상세 리뷰가 저장되었습니다. Saved Review Id: {}", savedReview.getId());
-        int savedRetrievalCount = saveRetrievals(reviewResponse.retrievals(), review);
+        int savedRetrievalCount = saveRetrievals(detailedReviewResponse.retrievals(), review);
 
         gitLabClient.createDiscussion(
-                reviewResponse.gitlabUrl(),
+                detailedReviewResponse.gitlabUrl(),
                 project.getBotToken(),
                 project.getGitlabProjectId(),
                 mrInfo.getGitlabMrIid(),
-                reviewResponse.content(),
-                reviewResponse.baseSha(),
-                reviewResponse.headSha(),
-                reviewResponse.startSha(),
-                reviewResponse.newPath(),
-                reviewResponse.oldPath());
+                detailedReviewResponse.content(),
+                detailedReviewResponse.baseSha(),
+                detailedReviewResponse.headSha(),
+                detailedReviewResponse.startSha(),
+                detailedReviewResponse.newPath(),
+                detailedReviewResponse.oldPath());
         log.debug(
                 "Gitlab에 상세 리뷰를 달았습니다. Saved Review Id: {}, Saved Retrieval Count: {}",
                 savedReview.getId(),
@@ -149,23 +136,17 @@ public class ReviewService {
 
     @Transactional
     @ServiceActivator(inputChannel = "mrEvalResponseChannel")
-    public void handleEvalResponse(String mrEvalResponseMessage) {
-        MrEvalResponseMessage evalResponse;
-        try {
-            evalResponse = objectMapper.readValue(mrEvalResponseMessage, MrEvalResponseMessage.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        MrInfo mrInfo = mrInfoRepository.getById(evalResponse.mrInfoId());
-        mrInfo.setConsistencyScore(evalResponse.mrEvaluationMessage().consistencyScore());
-        mrInfo.setReadabilityScore(evalResponse.mrEvaluationMessage().readabilityScore());
-        mrInfo.setSecurityScore(evalResponse.mrEvaluationMessage().securityScore());
-        mrInfo.setReliabilityScore(evalResponse.mrEvaluationMessage().reliabilityScore());
-        mrInfo.setMaintainabilityScore(evalResponse.mrEvaluationMessage().maintainabilityScore());
-        mrInfo.setReusabilityScore(evalResponse.mrEvaluationMessage().reusabilityScore());
+    public void handleEvalResponse(MrEvalResponseMessage mrEvalResponse) {
+        MrInfo mrInfo = mrInfoRepository.getById(mrEvalResponse.mrInfoId());
+        mrInfo.setConsistencyScore(mrEvalResponse.mrEvaluationMessage().consistencyScore());
+        mrInfo.setReadabilityScore(mrEvalResponse.mrEvaluationMessage().readabilityScore());
+        mrInfo.setSecurityScore(mrEvalResponse.mrEvaluationMessage().securityScore());
+        mrInfo.setReliabilityScore(mrEvalResponse.mrEvaluationMessage().reliabilityScore());
+        mrInfo.setMaintainabilityScore(mrEvalResponse.mrEvaluationMessage().maintainabilityScore());
+        mrInfo.setReusabilityScore(mrEvalResponse.mrEvaluationMessage().reusabilityScore());
 
         // TODO: user project socre 저장
-        String username = evalResponse.username();
+        String username = mrEvalResponse.username();
         userProjectScoreService.saveUserProjectScores(username, mrInfo, LocalDate.now());
     }
 

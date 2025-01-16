@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -64,6 +64,7 @@ public class RedisIntegrationConfig {
             @Qualifier("redisInboundChannel") MessageChannel redisInboundChannel) {
 
         RedisInboundChannelAdapter adapter = new RedisInboundChannelAdapter(redisConnectionFactory);
+        adapter.setSerializer(new GenericJackson2JsonRedisSerializer());
         adapter.setTopics(
                 "test",
                 "update",
@@ -82,8 +83,7 @@ public class RedisIntegrationConfig {
         SpelExpressionParser parser = new SpelExpressionParser();
         Expression topicExpression = parser.parseExpression("headers['topic']");
         handler.setTopicExpression(topicExpression);
-        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
-        handler.setSerializer(serializer);
+        handler.setSerializer(new GenericJackson2JsonRedisSerializer());
         return handler;
     }
 

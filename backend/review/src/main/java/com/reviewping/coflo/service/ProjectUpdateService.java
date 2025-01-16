@@ -1,8 +1,6 @@
 package com.reviewping.coflo.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.reviewping.coflo.git.GitUtil;
-import com.reviewping.coflo.json.JsonUtil;
 import com.reviewping.coflo.message.UpdateRequestMessage;
 import com.reviewping.coflo.repository.BranchRepository;
 import com.reviewping.coflo.repository.ChunkedCodeRepository;
@@ -26,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProjectUpdateService {
 
     private final String gitCloneDirectory;
-    private final JsonUtil jsonUtil;
     private final GitUtil gitUtil;
     private final ProjectHelper projectHelper;
     private final BranchRepository branchRepository;
@@ -34,13 +31,11 @@ public class ProjectUpdateService {
 
     public ProjectUpdateService(
             @Value("${git-clone-directory}") String gitCloneDirectory,
-            JsonUtil jsonUtil,
             GitUtil gitUtil,
             ProjectHelper projectHelper,
             BranchRepository branchRepository,
             ChunkedCodeRepository chunkedCodeRepository) {
         this.gitCloneDirectory = gitCloneDirectory;
-        this.jsonUtil = jsonUtil;
         this.gitUtil = gitUtil;
         this.projectHelper = projectHelper;
         this.branchRepository = branchRepository;
@@ -57,8 +52,7 @@ public class ProjectUpdateService {
      */
     @ServiceActivator(inputChannel = "updateChannel")
     @Transactional
-    public void updateKnowledgeBase(String updateRequestMessage) {
-        UpdateRequestMessage updateRequest = jsonUtil.fromJson(updateRequestMessage, new TypeReference<>() {});
+    public void updateKnowledgeBase(UpdateRequestMessage updateRequest) {
         // 1. 최신 commit_hash와 last_commit_hash 비교 (없으면 분기해서 init)
         BranchInfo branchInfo = branchRepository.findByBranchId(updateRequest.branchId());
         if (branchInfo == null) {
