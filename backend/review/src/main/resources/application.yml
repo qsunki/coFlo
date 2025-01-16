@@ -1,21 +1,20 @@
 spring:
   application:
-    name: coflo-ai
-
+    name: coflo-review
   main:
     keep-alive: true
-
-  data:
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-      password: ${REDIS_PASSWORD}
 
   datasource:
     driver-class-name: org.postgresql.Driver
     url: ${POSTGRES_REVIEW_URL}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
 
 openai:
   api:

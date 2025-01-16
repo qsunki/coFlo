@@ -1,14 +1,21 @@
 spring:
   application:
-    name: coflo
-
+    name: coflo-api
   profiles:
     active: local
     include: oauth
 
-  output:
-    ansi:
-      enabled: always
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${POSTGRES_REVIEW_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
 
 management:
   endpoints:
@@ -35,3 +42,6 @@ logging:
 crypto-key: ${CRYPTO_KEY}
 
 domain-webhook-url: ${COFLO_WEBHOOK_URL}
+
+mattermost-logger:
+  base-url: ${MATTERMOST_WEBHOOK_URL}
