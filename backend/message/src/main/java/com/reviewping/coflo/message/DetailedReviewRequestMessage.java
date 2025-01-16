@@ -1,4 +1,4 @@
-package com.reviewping.coflo.service.dto.request;
+package com.reviewping.coflo.message;
 
 public record DetailedReviewRequestMessage(
         Long projectId,

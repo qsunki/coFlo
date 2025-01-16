@@ -2,10 +2,10 @@ package com.reviewping.coflo.domain.project.service;
 
 import com.reviewping.coflo.domain.project.entity.Branch;
 import com.reviewping.coflo.domain.project.entity.Project;
-import com.reviewping.coflo.domain.project.message.UpdateRequestMessage;
 import com.reviewping.coflo.domain.project.repository.BranchRepository;
 import com.reviewping.coflo.domain.userproject.controller.dto.request.ProjectLinkRequest;
 import com.reviewping.coflo.global.integration.RedisGateway;
+import com.reviewping.coflo.message.UpdateRequestMessage;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

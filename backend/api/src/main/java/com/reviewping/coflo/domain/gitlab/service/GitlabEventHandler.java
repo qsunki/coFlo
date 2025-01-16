@@ -2,7 +2,6 @@ package com.reviewping.coflo.domain.gitlab.service;
 
 import com.reviewping.coflo.domain.project.entity.Branch;
 import com.reviewping.coflo.domain.project.entity.Project;
-import com.reviewping.coflo.domain.project.message.UpdateRequestMessage;
 import com.reviewping.coflo.domain.project.repository.BranchRepository;
 import com.reviewping.coflo.domain.project.repository.ProjectRepository;
 import com.reviewping.coflo.domain.review.service.ReviewService;
@@ -10,6 +9,7 @@ import com.reviewping.coflo.global.client.gitlab.request.GitlabEventRequest;
 import com.reviewping.coflo.global.error.ErrorCode;
 import com.reviewping.coflo.global.error.exception.BusinessException;
 import com.reviewping.coflo.global.integration.RedisGateway;
+import com.reviewping.coflo.message.UpdateRequestMessage;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;

@@ -1,5 +1,7 @@
 package com.reviewping.coflo.domain.review.service;
 
+import static com.reviewping.coflo.message.ReviewRequestMessage.*;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reviewping.coflo.domain.badge.service.BadgeEventService;
@@ -20,8 +22,6 @@ import com.reviewping.coflo.domain.review.controller.dto.response.ReviewResponse
 import com.reviewping.coflo.domain.review.entity.LanguageType;
 import com.reviewping.coflo.domain.review.entity.Retrieval;
 import com.reviewping.coflo.domain.review.entity.Review;
-import com.reviewping.coflo.domain.review.message.*;
-import com.reviewping.coflo.domain.review.message.ReviewRequestMessage.MrContent;
 import com.reviewping.coflo.domain.review.repository.LanguageRepository;
 import com.reviewping.coflo.domain.review.repository.RetrievalRepository;
 import com.reviewping.coflo.domain.review.repository.ReviewRepository;
@@ -34,6 +34,7 @@ import com.reviewping.coflo.domain.webhookchannel.service.WebhookChannelService;
 import com.reviewping.coflo.global.client.gitlab.GitLabClient;
 import com.reviewping.coflo.global.client.gitlab.response.GitlabMrDiffsContent;
 import com.reviewping.coflo.global.integration.RedisGateway;
+import com.reviewping.coflo.message.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;

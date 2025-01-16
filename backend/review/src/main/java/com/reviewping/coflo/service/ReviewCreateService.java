@@ -1,22 +1,16 @@
 package com.reviewping.coflo.service;
 
-import static com.reviewping.coflo.service.dto.request.ReviewRequestMessage.*;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.reviewping.coflo.gateway.RedisGateway;
 import com.reviewping.coflo.json.JsonUtil;
+import com.reviewping.coflo.message.*;
+import com.reviewping.coflo.message.ReviewRequestMessage.MrContent;
 import com.reviewping.coflo.openai.OpenaiClient;
 import com.reviewping.coflo.openai.dto.ChatCompletionResponse;
 import com.reviewping.coflo.openai.dto.EmbeddingResponse;
 import com.reviewping.coflo.repository.ChunkedCodeRepository;
 import com.reviewping.coflo.repository.PromptTemplateRepository;
 import com.reviewping.coflo.service.dto.ChunkedCode;
-import com.reviewping.coflo.service.dto.request.DetailedReviewRequestMessage;
-import com.reviewping.coflo.service.dto.request.ReviewRegenerateRequestMessage;
-import com.reviewping.coflo.service.dto.request.ReviewRequestMessage;
-import com.reviewping.coflo.service.dto.response.DetailedReviewResponseMessage;
-import com.reviewping.coflo.service.dto.response.RetrievalMessage;
-import com.reviewping.coflo.service.dto.response.ReviewResponseMessage;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -66,7 +60,7 @@ public class ReviewCreateService {
         // 2. 참고자료 검색
         List<ChunkedCode> chunkedCodes = chunkedCodeRepository.retrieveRelevantData(projectId, branchId, 10, embedding);
         List<RetrievalMessage> retrievals =
-                chunkedCodes.stream().map(RetrievalMessage::from).toList();
+                chunkedCodes.stream().map(this::fromChunkedCode).toList();
         // 3. 프롬프트 생성
         String prompt = buildPrompt(reviewRequest.mrContent(), reviewRequest.customPrompt(), retrievals);
         // 4. 리뷰 생성
@@ -75,7 +69,7 @@ public class ReviewCreateService {
                 chatCompletionResponse.choices().getFirst().message().content();
         // 5. 리뷰 생성 완료
         ReviewResponseMessage reviewResponse = new ReviewResponseMessage(
-                reviewRequest.gitlabUrl(), reviewRequest.mrInfoId(), 0L, chatMessage, retrievals);
+                0L, reviewRequest.gitlabUrl(), reviewRequest.mrInfoId(), chatMessage, retrievals);
         log.info(
                 "전체리뷰 생성 완료 - GitLab URL: {}, MR Info ID: {}, 참고자료 수: {}",
                 reviewResponse.gitlabUrl(),
@@ -102,9 +96,9 @@ public class ReviewCreateService {
                 chatCompletionResponse.choices().getFirst().message().content();
         // 3. 리뷰 생성 완료
         ReviewResponseMessage reviewResponse = new ReviewResponseMessage(
+                reviewRequest.userId(),
                 reviewRequest.gitlabUrl(),
                 reviewRequest.mrInfoId(),
-                reviewRequest.userId(),
                 chatMessage,
                 reviewRequest.retrievals());
         log.info(
@@ -133,7 +127,7 @@ public class ReviewCreateService {
         // 2. 참고자료 검색
         List<ChunkedCode> chunkedCodes = chunkedCodeRepository.retrieveRelevantData(projectId, branchId, 10, embedding);
         List<RetrievalMessage> retrievals =
-                chunkedCodes.stream().map(RetrievalMessage::from).toList();
+                chunkedCodes.stream().map(this::fromChunkedCode).toList();
         // 3. 프롬프트 생성
         String prompt = buildDetailedPrompt(reviewRequest.diff(), retrievals);
         // 4. 리뷰 생성
@@ -171,5 +165,9 @@ public class ReviewCreateService {
     private String buildPrompt(MrContent mrContent, String customPrompt, List<RetrievalMessage> retrievals) {
         String prompt = promptTemplateRepository.findLatestTemplate(REVIEW_TYPE).content();
         return prompt.formatted(retrievals, mrContent.mrDescription(), mrContent.mrDiffs(), customPrompt);
+    }
+
+    private RetrievalMessage fromChunkedCode(ChunkedCode chunkedCode) {
+        return new RetrievalMessage(chunkedCode.getContent(), chunkedCode.getFileName(), chunkedCode.getLanguage());
     }
 }

@@ -1,10 +1,6 @@
 package com.reviewping.coflo.global.integration;
 
-import com.reviewping.coflo.domain.project.message.UpdateRequestMessage;
-import com.reviewping.coflo.domain.review.message.DetailedReviewRequestMessage;
-import com.reviewping.coflo.domain.review.message.MrEvalRequestMessage;
-import com.reviewping.coflo.domain.review.message.ReviewRegenerateRequestMessage;
-import com.reviewping.coflo.domain.review.message.ReviewRequestMessage;
+import com.reviewping.coflo.message.*;
 import org.springframework.integration.annotation.Gateway;
 import org.springframework.integration.annotation.GatewayHeader;
 import org.springframework.integration.annotation.MessagingGateway;

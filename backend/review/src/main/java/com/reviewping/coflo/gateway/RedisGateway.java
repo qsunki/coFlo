@@ -1,8 +1,8 @@
 package com.reviewping.coflo.gateway;
 
-import com.reviewping.coflo.service.dto.response.DetailedReviewResponseMessage;
-import com.reviewping.coflo.service.dto.response.MrEvalResponseMessage;
-import com.reviewping.coflo.service.dto.response.ReviewResponseMessage;
+import com.reviewping.coflo.message.DetailedReviewResponseMessage;
+import com.reviewping.coflo.message.MrEvalResponseMessage;
+import com.reviewping.coflo.message.ReviewResponseMessage;
 import org.springframework.integration.annotation.Gateway;
 import org.springframework.integration.annotation.GatewayHeader;
 import org.springframework.integration.annotation.MessagingGateway;

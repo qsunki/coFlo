@@ -1,4 +1,4 @@
-package com.reviewping.coflo.domain.review.message;
+package com.reviewping.coflo.message;
 
 import java.util.List;
 
