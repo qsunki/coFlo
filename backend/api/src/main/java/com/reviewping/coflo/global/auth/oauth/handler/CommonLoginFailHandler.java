@@ -4,8 +4,6 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reviewping.coflo.global.error.ErrorCode;
-import com.reviewping.coflo.global.util.WebHookUtil;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -21,12 +19,11 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 public class CommonLoginFailHandler implements AuthenticationFailureHandler {
 
     private final ObjectMapper objectMapper;
-    private final WebHookUtil webHookUtil;
 
     @Override
     public void onAuthenticationFailure(
             HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
-            throws IOException, ServletException {
+            throws IOException {
         log.info("=== 로그인 실패 === Exception: {}", exception.getMessage());
 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -40,8 +37,5 @@ public class CommonLoginFailHandler implements AuthenticationFailureHandler {
                 "code", errorCode.getCode(),
                 "message", errorCode.getMessage());
         response.getWriter().write(objectMapper.writeValueAsString(error));
-
-        String logMessage = String.format("OAuth2 Authentication Failed: %s", exception.getMessage());
-        webHookUtil.sendWebHookMessage(logMessage);
     }
 }

@@ -32,9 +32,6 @@ crypto-key: ${CRYPTO_KEY}
 
 domain-webhook-url: ${COFLO_WEBHOOK_URL}
 
-mattermost-logger:
-  base-url: ${MATTERMOST_WEBHOOK_URL}
-
 otel:
   instrumentation:
     micrometer:
