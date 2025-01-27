@@ -5,7 +5,6 @@ import com.reviewping.coflo.domain.review.controller.dto.response.RetrievalDetai
 import com.reviewping.coflo.domain.review.controller.dto.response.ReviewResponse;
 import com.reviewping.coflo.domain.review.service.ReviewService;
 import com.reviewping.coflo.domain.user.entity.User;
-import com.reviewping.coflo.global.aop.LogExecution;
 import com.reviewping.coflo.global.auth.AuthUser;
 import com.reviewping.coflo.global.common.response.ApiResponse;
 import com.reviewping.coflo.global.common.response.impl.ApiSuccessResponse;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-@LogExecution
 @Slf4j
 @RestController
 @RequiredArgsConstructor

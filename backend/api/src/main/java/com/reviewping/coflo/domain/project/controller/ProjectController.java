@@ -9,7 +9,6 @@ import com.reviewping.coflo.domain.project.service.ProjectService;
 import com.reviewping.coflo.domain.project.service.ProjectTeamStatisticsService;
 import com.reviewping.coflo.domain.project.service.ProjectUserStatisticsService;
 import com.reviewping.coflo.domain.user.entity.User;
-import com.reviewping.coflo.global.aop.LogExecution;
 import com.reviewping.coflo.global.auth.AuthUser;
 import com.reviewping.coflo.global.common.response.ApiResponse;
 import com.reviewping.coflo.global.common.response.impl.ApiSuccessResponse;
@@ -18,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-@LogExecution
 @Slf4j
 @RestController
 @RequiredArgsConstructor

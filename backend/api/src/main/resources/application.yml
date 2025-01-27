@@ -21,23 +21,15 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,metrics,prometheus
-        exclude: env,beans,heapdump,threaddump,configprops,quarts
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-  web:
-    server:
-      auto-time-requests: true
+        include: health
 
 logging:
   level:
-    com:
-      reviewping:
-        coflo: debug
+    com.reviewping.coflo: debug
     web: debug
-  config: classpath:logging/logback-spring.xml
+    org.springframework.security.web:
+      authentication: debug
+      FilterChainProxy: debug
 
 crypto-key: ${CRYPTO_KEY}
 
@@ -45,3 +37,8 @@ domain-webhook-url: ${COFLO_WEBHOOK_URL}
 
 mattermost-logger:
   base-url: ${MATTERMOST_WEBHOOK_URL}
+
+otel:
+  instrumentation:
+    micrometer:
+      enabled: true

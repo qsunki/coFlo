@@ -6,7 +6,6 @@ import com.reviewping.coflo.domain.gitlab.controller.dto.response.GitlabProjectP
 import com.reviewping.coflo.domain.gitlab.service.GitlabApiService;
 import com.reviewping.coflo.domain.user.controller.dto.request.GitlabAccountRequest;
 import com.reviewping.coflo.domain.user.entity.User;
-import com.reviewping.coflo.global.aop.LogExecution;
 import com.reviewping.coflo.global.auth.AuthUser;
 import com.reviewping.coflo.global.common.response.ApiResponse;
 import com.reviewping.coflo.global.common.response.impl.ApiSuccessResponse;
@@ -15,7 +14,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-@LogExecution
 @RestController
 @RequestMapping("/api/gitlab")
 @RequiredArgsConstructor

@@ -16,6 +16,10 @@ spring:
       port: ${REDIS_PORT}
       password: ${REDIS_PASSWORD}
 
+logging:
+  level:
+    com.reviewping.coflo: debug
+
 openai:
   api:
     key: ${OPENAI_API_KEY}
@@ -24,5 +28,7 @@ openai:
 
 git-clone-directory: ${GIT_CLONE_DIRECTORY}
 
-mattermost-logger:
-  base-url: ${MATTERMOST_WEBHOOK_URL}
+otel:
+  instrumentation:
+    micrometer:
+      enabled: true

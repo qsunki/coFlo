@@ -6,7 +6,6 @@ import com.reviewping.coflo.domain.webhookchannel.controller.dto.request.Webhook
 import com.reviewping.coflo.domain.webhookchannel.controller.dto.response.ChannelCodeResponse;
 import com.reviewping.coflo.domain.webhookchannel.controller.dto.response.WebhookChannelResponse;
 import com.reviewping.coflo.domain.webhookchannel.service.WebhookChannelService;
-import com.reviewping.coflo.global.aop.LogExecution;
 import com.reviewping.coflo.global.common.response.ApiResponse;
 import com.reviewping.coflo.global.common.response.impl.ApiSuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,7 +14,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-@LogExecution
 @RestController
 @RequestMapping("/api/channels")
 @RequiredArgsConstructor

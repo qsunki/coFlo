@@ -5,7 +5,6 @@ import com.reviewping.coflo.domain.mergerequest.controller.dto.response.GitlabMr
 import com.reviewping.coflo.domain.mergerequest.controller.dto.response.GitlabMrQueryResponse;
 import com.reviewping.coflo.domain.mergerequest.service.MergeRequestService;
 import com.reviewping.coflo.domain.user.entity.User;
-import com.reviewping.coflo.global.aop.LogExecution;
 import com.reviewping.coflo.global.auth.AuthUser;
 import com.reviewping.coflo.global.common.response.ApiResponse;
 import com.reviewping.coflo.global.common.response.impl.ApiSuccessResponse;
@@ -14,7 +13,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-@LogExecution
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/merge-requests")

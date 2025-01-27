@@ -1,3 +1,9 @@
+dependencyManagement {
+    imports {
+        mavenBom("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom:2.12.0")
+    }
+}
+
 dependencies {
     implementation project(':message')
     // Spring
@@ -6,6 +12,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-json'
     implementation 'org.springframework.integration:spring-integration-http'
     implementation 'org.springframework.integration:spring-integration-jdbc'
+
+    // Opentelemetry instrumentation
+    implementation 'io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter'
 
     // Pgvector
     implementation 'com.pgvector:pgvector:0.1.6'
