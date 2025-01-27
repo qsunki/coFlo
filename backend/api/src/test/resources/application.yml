@@ -72,12 +72,3 @@ jwt:
   refresh:
     expiration: 600000
     name: Authorization-Refresh
-
-redirect-regist-url: http://localhost:5173
-redirect-main-url: http://localhost:5173
-
-openai:
-  api:
-    key: openai_test_key
-    organization: openai_test_organization
-    project: openai_test_project
