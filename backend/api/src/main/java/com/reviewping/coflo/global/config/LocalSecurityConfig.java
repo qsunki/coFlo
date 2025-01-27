@@ -24,8 +24,11 @@ public class LocalSecurityConfig {
 
     @Bean
     public SecurityFilterChain localSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(
-                        authorize -> authorize.requestMatchers("/actuator/health", "/api/sse/subscribe", "/webhook/*"))
+        http.authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/actuator/health", "/api/sse/subscribe", "/webhook/*")
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated())
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
