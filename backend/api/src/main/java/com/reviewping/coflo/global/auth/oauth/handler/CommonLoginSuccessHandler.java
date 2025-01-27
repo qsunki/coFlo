@@ -6,7 +6,6 @@ import com.reviewping.coflo.domain.user.service.LoginHistoryService;
 import com.reviewping.coflo.domain.user.service.UserService;
 import com.reviewping.coflo.domain.userproject.entity.UserProject;
 import com.reviewping.coflo.domain.userproject.repository.UserProjectRepository;
-import com.reviewping.coflo.global.auth.jwt.utils.JwtConstants;
 import com.reviewping.coflo.global.auth.jwt.utils.JwtProvider;
 import com.reviewping.coflo.global.auth.oauth.model.UserDetails;
 import com.reviewping.coflo.global.util.CookieUtil;
@@ -28,6 +27,7 @@ public class CommonLoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final RedisUtil redisUtil;
     private final CookieUtil cookieUtil;
+    private final JwtProvider jwtProvider;
     private final LoginHistoryService loginHistoryService;
     private final BadgeEventService badgeEventService;
     private final UserService userService;
@@ -44,18 +44,18 @@ public class CommonLoginSuccessHandler implements AuthenticationSuccessHandler {
 
         log.info("=== 로그인 성공 ===");
         Map<String, Object> responseMap = Map.of("userId", userId);
-        String accessToken = JwtProvider.generateToken(responseMap, JwtConstants.ACCESS_EXP_TIME);
-        String refreshToken = JwtProvider.generateToken(responseMap, JwtConstants.REFRESH_EXP_TIME);
+        String accessToken = jwtProvider.generateAccessToken(responseMap);
+        String refreshToken = jwtProvider.generateRefreshToken(responseMap);
 
         Cookie accessTokenCookie =
-                cookieUtil.createCookie(JwtConstants.ACCESS_NAME, accessToken, JwtConstants.ACCESS_EXP_TIME * 60);
+                cookieUtil.createCookie(jwtProvider.accessName, accessToken, jwtProvider.accessExpTime * 60);
         Cookie refreshTokenCookie =
-                cookieUtil.createCookie(JwtConstants.REFRESH_NAME, refreshToken, JwtConstants.REFRESH_EXP_TIME * 60);
+                cookieUtil.createCookie(jwtProvider.refreshName, refreshToken, jwtProvider.refreshExpTime * 60);
 
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
 
-        redisUtil.set(userId.toString(), refreshToken, JwtConstants.REFRESH_EXP_TIME);
+        redisUtil.set(userId.toString(), refreshToken, jwtProvider.refreshExpTime);
         loginHistoryService.recordLogin(user);
         badgeEventService.eventRandom(user);
 

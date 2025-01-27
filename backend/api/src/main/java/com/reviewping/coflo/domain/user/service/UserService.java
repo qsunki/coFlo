@@ -6,15 +6,12 @@ import com.reviewping.coflo.domain.user.entity.User;
 import com.reviewping.coflo.domain.user.repository.GitlabAccountRepository;
 import com.reviewping.coflo.domain.user.repository.UserRepository;
 import com.reviewping.coflo.domain.userproject.repository.UserProjectRepository;
-import com.reviewping.coflo.global.auth.jwt.utils.JwtConstants;
 import com.reviewping.coflo.global.client.gitlab.GitLabClient;
 import com.reviewping.coflo.global.client.gitlab.response.GitlabUserInfoContent;
 import com.reviewping.coflo.global.error.ErrorCode;
 import com.reviewping.coflo.global.error.exception.BusinessException;
 import com.reviewping.coflo.global.util.CookieUtil;
 import com.reviewping.coflo.global.util.RedisUtil;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -84,11 +81,5 @@ public class UserService {
     public Long getRecentVisitProjectId(User user) {
         List<GitlabAccount> gitlabAccounts = gitlabAccountRepository.findAllByUser(user);
         return gitlabAccounts.isEmpty() ? null : gitlabAccounts.getFirst().getVisitedProjectId();
-    }
-
-    public void logout(HttpServletRequest request, HttpServletResponse response, Long userId) {
-        cookieUtil.deleteCookie(request, response, JwtConstants.ACCESS_NAME);
-        cookieUtil.deleteCookie(request, response, JwtConstants.REFRESH_NAME);
-        redisUtil.delete(userId.toString());
     }
 }

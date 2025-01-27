@@ -2,7 +2,6 @@ package com.reviewping.coflo.global.auth.jwt.filter;
 
 import static com.reviewping.coflo.global.error.ErrorCode.*;
 
-import com.reviewping.coflo.global.auth.jwt.utils.JwtConstants;
 import com.reviewping.coflo.global.auth.jwt.utils.JwtProvider;
 import com.reviewping.coflo.global.auth.oauth.service.AuthenticationService;
 import com.reviewping.coflo.global.util.CookieUtil;
@@ -23,16 +22,17 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtVerifyFilter extends OncePerRequestFilter {
 
+    private static final String REFRESH_TOKEN_END_POINT = "/api/refresh-tokens";
+
     private final RedisUtil redisUtil;
     private final CookieUtil cookieUtil;
+    private final JwtProvider jwtProvider;
     private final AuthenticationService authenticationService;
-    private final String REFRESH_TOKEN_END_POINT = "/api/refresh-tokens";
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(HttpServletRequest request) {
         String requestURI = request.getRequestURI();
-        log.info("요청받은 URI: " + requestURI);
-
+        log.info("요청받은 URI: {}", requestURI);
         return false;
     }
 
@@ -40,8 +40,8 @@ public class JwtVerifyFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String requestURI = request.getRequestURI();
-        String accessToken = cookieUtil.getCookieValue(request, JwtConstants.ACCESS_NAME);
-        String refreshToken = cookieUtil.getCookieValue(request, JwtConstants.REFRESH_NAME);
+        String accessToken = cookieUtil.getCookieValue(request, jwtProvider.accessName);
+        String refreshToken = cookieUtil.getCookieValue(request, jwtProvider.refreshName);
 
         if (requestURI.equals(REFRESH_TOKEN_END_POINT) && refreshToken != null) {
             handleRefreshToken(response, refreshToken);
@@ -53,12 +53,12 @@ public class JwtVerifyFilter extends OncePerRequestFilter {
     }
 
     private void handleAccessToken(String accessToken) {
-        Map<String, Object> claims = JwtProvider.validateToken(accessToken);
+        Map<String, Object> claims = jwtProvider.validateToken(accessToken);
         authenticationService.setAuthentication(((Integer) claims.get("userId")).longValue());
     }
 
     private void handleRefreshToken(HttpServletResponse response, String refreshToken) {
-        Map<String, Object> claims = JwtProvider.validateToken(refreshToken);
+        Map<String, Object> claims = jwtProvider.validateToken(refreshToken);
         String userId = ((Integer) claims.get("userId")).toString();
         String token = (String) redisUtil.get(userId);
         token = token.replaceAll("^\"|\"$", "");
@@ -67,15 +67,15 @@ public class JwtVerifyFilter extends OncePerRequestFilter {
             throw new JwtException(TOKEN_INVALID.getMessage());
         } else {
             redisUtil.delete(userId);
-            String accessToken = JwtProvider.generateToken(claims, JwtConstants.ACCESS_EXP_TIME);
-            refreshToken = JwtProvider.generateToken(claims, JwtConstants.REFRESH_EXP_TIME);
-            redisUtil.set(userId, refreshToken, JwtConstants.REFRESH_EXP_TIME);
+            String accessToken = jwtProvider.generateAccessToken(claims);
+            refreshToken = jwtProvider.generateRefreshToken(claims);
+            redisUtil.set(userId, refreshToken, jwtProvider.refreshExpTime);
 
             Cookie accessTokenCookie =
-                    cookieUtil.createCookie(JwtConstants.ACCESS_NAME, accessToken, JwtConstants.ACCESS_EXP_TIME * 60);
+                    cookieUtil.createCookie(jwtProvider.accessName, accessToken, jwtProvider.accessExpTime * 60);
 
-            Cookie refreshTokenCookie = cookieUtil.createCookie(
-                    JwtConstants.REFRESH_NAME, refreshToken, JwtConstants.REFRESH_EXP_TIME * 60);
+            Cookie refreshTokenCookie =
+                    cookieUtil.createCookie(jwtProvider.refreshName, refreshToken, jwtProvider.refreshExpTime * 60);
 
             response.addCookie(accessTokenCookie);
             response.addCookie(refreshTokenCookie);
