@@ -4,7 +4,7 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${POSTGRES_REVIEW_URL}
+    url: ${POSTGRES_API_URL}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
 
