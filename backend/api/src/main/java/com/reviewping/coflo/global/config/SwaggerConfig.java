@@ -85,7 +85,7 @@ public class SwaggerConfig {
     }
 
     @Bean
-    GroupedOpenApi ReviewApi() {
+    GroupedOpenApi reviewApi() {
         return GroupedOpenApi.builder()
                 .group("review")
                 .pathsToMatch("/api/reviews/**")
@@ -93,7 +93,7 @@ public class SwaggerConfig {
     }
 
     @Bean
-    GroupedOpenApi BadgeApi() {
+    GroupedOpenApi badgeApi() {
         return GroupedOpenApi.builder()
                 .group("badge")
                 .pathsToMatch("/api/badges/**")
