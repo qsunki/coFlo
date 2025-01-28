@@ -11,7 +11,9 @@ public class GitlabEventRequestFixture {
         return new GitlabEventRequest(
                 "merge_request",
                 "merge_request",
+                "f394bb50345537123111bac3ae5add09e94a3400",
                 new Project(1L, "https://gitlab.example.com"),
+                new User("qsunki"),
                 new ObjectAttributes(
                         99L,
                         1L,
@@ -28,7 +30,9 @@ public class GitlabEventRequestFixture {
         return new GitlabEventRequest(
                 "merge_request",
                 "merge_request",
+                "f394bb50345537123111bac3ae5add09e94a3400",
                 new Project(1L, "https://gitlab.example.com"),
+                new User("qsunki"),
                 new ObjectAttributes(
                         99L,
                         1L,
@@ -45,7 +49,9 @@ public class GitlabEventRequestFixture {
         return new GitlabEventRequest(
                 "merge_request",
                 "merge_request",
+                "f394bb50345537123111bac3ae5add09e94a3400",
                 new Project(1L, "invalid-url"),
+                new User("qsunki"),
                 new ObjectAttributes(
                         99L,
                         1L,
