@@ -10,6 +10,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-json'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.integration:spring-integration-http'
     implementation 'org.springframework.integration:spring-integration-jdbc'
 
