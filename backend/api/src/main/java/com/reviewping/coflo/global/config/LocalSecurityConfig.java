@@ -29,6 +29,7 @@ public class LocalSecurityConfig {
                         .permitAll()
                         .anyRequest()
                         .authenticated())
+                .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
