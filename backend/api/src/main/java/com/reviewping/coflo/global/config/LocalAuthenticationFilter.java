@@ -34,6 +34,7 @@ public class LocalAuthenticationFilter extends OncePerRequestFilter {
                 return new UserDetails(localUser);
             }
         };
+        auth.setAuthenticated(true);
         SecurityContextHolder.getContextHolderStrategy().getContext().setAuthentication(auth);
         filterChain.doFilter(request, response);
     }
