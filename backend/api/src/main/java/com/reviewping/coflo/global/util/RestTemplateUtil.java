@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class RestTemplateUtil {
 
-    private static final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
     public HttpHeaders createHeaders(String contentType) {
         HttpHeaders headers = new HttpHeaders();

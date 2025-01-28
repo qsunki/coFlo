@@ -2,6 +2,7 @@ package com.reviewping.coflo.global.util;
 
 import com.reviewping.coflo.domain.gitlab.controller.dto.request.GitlabSearchRequest;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.graphql.client.HttpSyncGraphQlClient;
 import org.springframework.stereotype.Component;
@@ -9,18 +10,21 @@ import org.springframework.web.client.RestClient;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class GraphQlUtil {
 
     private static final String HTTPS = "https://";
     private static final String GRAPHQL_ENDPOINT = "/api/graphql";
+
+    private final RestClient restClient;
 
     private String makeGraphqlUrl(String gitlabUrl) {
         return HTTPS + gitlabUrl + GRAPHQL_ENDPOINT;
     }
 
     public HttpSyncGraphQlClient getGraphQlClient(String gitlabUrl, String token) {
-        RestClient restClient = RestClient.create(makeGraphqlUrl(gitlabUrl));
         return HttpSyncGraphQlClient.builder(restClient)
+                .url(makeGraphqlUrl(gitlabUrl))
                 .headers((headers) -> headers.setBearerAuth(token))
                 .build();
     }
