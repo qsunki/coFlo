@@ -6,6 +6,7 @@ import com.reviewping.coflo.repository.BranchRepository;
 import com.reviewping.coflo.repository.ChunkedCodeRepository;
 import com.reviewping.coflo.service.dto.BranchInfo;
 import com.reviewping.coflo.service.dto.GitFileInfo;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -50,6 +51,7 @@ public class ProjectUpdateService {
         생성 -> 청킹 저장
     3. last_commit_hash 업데이트
      */
+    @WithSpan
     @ServiceActivator(inputChannel = "updateChannel")
     @Transactional
     public void updateKnowledgeBase(UpdateRequestMessage updateRequest) {

@@ -9,6 +9,7 @@ import com.reviewping.coflo.openai.dto.EmbeddingResponse;
 import com.reviewping.coflo.repository.ChunkedCodeRepository;
 import com.reviewping.coflo.repository.PromptTemplateRepository;
 import com.reviewping.coflo.service.dto.ChunkedCode;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -37,6 +38,7 @@ public class ReviewCreateService {
         this.chunkedCodeRepository = chunkedCodeRepository;
     }
 
+    @WithSpan
     @ServiceActivator(inputChannel = "reviewRequestChannel")
     public void createOverallReview(ReviewRequestMessage reviewRequest) {
         Long projectId = reviewRequest.projectId();
@@ -72,6 +74,7 @@ public class ReviewCreateService {
         redisGateway.sendReview(reviewResponse);
     }
 
+    @WithSpan
     @ServiceActivator(inputChannel = "reviewRegenerateRequestChannel")
     public void regenerateReview(ReviewRegenerateRequestMessage reviewRegenerateRequest) {
         // 1. 프롬프트 생성
@@ -103,6 +106,7 @@ public class ReviewCreateService {
         redisGateway.sendReview(reviewResponse);
     }
 
+    @WithSpan
     @ServiceActivator(inputChannel = "detailedReviewRequestChannel")
     public void createDetailedReview(DetailedReviewRequestMessage detailedReviewRequest) {
         Long projectId = detailedReviewRequest.projectId();

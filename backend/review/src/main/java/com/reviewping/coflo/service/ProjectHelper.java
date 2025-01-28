@@ -5,6 +5,7 @@ import com.reviewping.coflo.openai.dto.EmbeddingResponse;
 import com.reviewping.coflo.repository.ChunkedCodeRepository;
 import com.reviewping.coflo.service.dto.ChunkedCode;
 import com.reviewping.coflo.treesitter.TreeSitterUtil;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,6 +25,7 @@ public class ProjectHelper {
     private final TreeSitterUtil treeSitterUtil;
     private final OpenaiClient openaiClient;
 
+    @WithSpan
     @Transactional
     public void preprocessAndSave(Long branchInfoId, Stream<Path> filePathStream) {
         List<ChunkedCode> buffer = new ArrayList<>(BATCH_SIZE);

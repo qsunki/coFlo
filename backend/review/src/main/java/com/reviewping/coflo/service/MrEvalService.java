@@ -10,6 +10,7 @@ import com.reviewping.coflo.message.ReviewRequestMessage.MrContent;
 import com.reviewping.coflo.openai.OpenaiClient;
 import com.reviewping.coflo.openai.dto.ChatCompletionResponse;
 import com.reviewping.coflo.repository.PromptTemplateRepository;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,7 @@ public class MrEvalService {
         EVAL_TEMPLATE = jsonUtil.toJson(mrEvaluationMessage);
     }
 
+    @WithSpan
     @ServiceActivator(inputChannel = "mrEvalRequestChannel")
     public void evaluateMr(MrEvalRequestMessage mrEvalRequest) {
         log.info("MR 평가 시작 - MR Info ID: {}", mrEvalRequest.mrInfoId());

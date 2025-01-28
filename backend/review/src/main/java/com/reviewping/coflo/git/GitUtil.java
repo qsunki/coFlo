@@ -1,6 +1,7 @@
 package com.reviewping.coflo.git;
 
 import com.reviewping.coflo.service.dto.GitFileInfo;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -32,6 +33,7 @@ public class GitUtil {
      * @param localPath 저장할 Git 로컬 저장소 위치
      * @throws GitUtilException Git 클론 중 발생할 수 있는 예외
      */
+    @WithSpan
     public String shallowCloneOrPull(String gitUrl, String branch, String token, Path localPath) {
         File localDir = localPath.toFile();
         if (isDirectoryValid(localDir)) {
@@ -78,6 +80,7 @@ public class GitUtil {
         }
     }
 
+    @WithSpan
     public List<GitFileInfo> getUpdatedFileInfos(String repoPath, String oldCommitHash, String newCommitHash) {
         try (Repository repository = openRepository(repoPath);
                 RevWalk revWalk = new RevWalk(repository);
@@ -94,7 +97,7 @@ public class GitUtil {
         }
     }
 
-    public void fetchCommit(Git git, String commitHash) {
+    private void fetchCommit(Git git, String commitHash) {
         try {
             git.fetch().setRefSpecs(new RefSpec(commitHash)).call();
         } catch (GitAPIException e) {
