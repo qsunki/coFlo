@@ -6,12 +6,14 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import com.reviewping.coflo.json.JsonUtil;
 import com.reviewping.coflo.openai.dto.*;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+@Slf4j
 @Component
 public class OpenaiClient {
     private static final String CHAT_URL = "https://api.openai.com/v1/chat/completions";
@@ -47,7 +49,9 @@ public class OpenaiClient {
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
         ResponseEntity<EmbeddingResponse> exchange =
                 restTemplate.exchange(EMBEDDING_URL, HttpMethod.POST, entity, EmbeddingResponse.class);
-        return exchange.getBody();
+        EmbeddingResponse response = exchange.getBody();
+        log.debug("embedding usage: {}", response.usage());
+        return response;
     }
 
     public ChatCompletionResponse chat(String prompt) {
