@@ -23,7 +23,7 @@ public class Project extends BaseTimeEntity {
     private Long id;
 
     @Convert(converter = CryptoConverter.class)
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String botToken;
 
     @Column(nullable = false, unique = true)
