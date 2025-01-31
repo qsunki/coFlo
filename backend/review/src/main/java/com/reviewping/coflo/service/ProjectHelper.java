@@ -34,10 +34,16 @@ public class ProjectHelper {
                 .filter(Files::isRegularFile) // 파일만 선택
                 .filter(this::isCodeFile)
                 .flatMap(filePath -> preprocessCode(filePath.toFile()).stream())
-                .map(this::addEmbedding)
                 .forEach(chunkedCode -> {
                     buffer.add(chunkedCode);
                     if (buffer.size() >= BATCH_SIZE) {
+                        EmbeddingResponse embeddingResponse = openaiClient.generateEmbedding(
+                                buffer.stream().map(ChunkedCode::getContent).toList());
+                        for (int i = 0; i < buffer.size(); i++) {
+                            ChunkedCode chunkedCodeWithNoEmbedding = buffer.get(i);
+                            chunkedCodeWithNoEmbedding.addEmbedding(
+                                    embeddingResponse.data().get(i).embedding());
+                        }
                         chunkedCodeRepository.saveAllChunkedCodes(branchInfoId, buffer);
                         buffer.clear();
                     }

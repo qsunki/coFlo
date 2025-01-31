@@ -64,4 +64,15 @@ public class OpenaiClient {
                 restTemplate.exchange(CHAT_URL, HttpMethod.POST, entity, new ParameterizedTypeReference<>() {});
         return exchange.getBody();
     }
+
+    public EmbeddingResponse generateEmbedding(List<String> input) {
+        ArrayEmbeddingRequest request = new ArrayEmbeddingRequest(input, TEXT_EMBEDDING_3_SMALL);
+        String body = jsonUtil.toJson(request);
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+        ResponseEntity<EmbeddingResponse> exchange =
+                restTemplate.exchange(EMBEDDING_URL, HttpMethod.POST, entity, EmbeddingResponse.class);
+        EmbeddingResponse response = exchange.getBody();
+        log.debug("embedding usage: {}", response.usage());
+        return response;
+    }
 }
