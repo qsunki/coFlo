@@ -10,14 +10,9 @@ import org.treesitter.*;
 
 public class JavaChunkStrategy implements ChunkStrategy {
 
-    private final TSParser parser;
-
-    public JavaChunkStrategy(TSParser parser) {
-        this.parser = parser;
-    }
-
     @Override
     public List<ChunkedCode> chunk(File file) {
+        TSParser parser = new TSParser();
         byte[] code = FileUtil.getCodeBytes(file);
         TSLanguage java = new TreeSitterJava();
         parser.setLanguage(java);

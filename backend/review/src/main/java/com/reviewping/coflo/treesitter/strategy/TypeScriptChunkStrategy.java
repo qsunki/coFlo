@@ -10,14 +10,9 @@ import org.treesitter.*;
 
 public class TypeScriptChunkStrategy implements ChunkStrategy {
 
-    private final TSParser parser;
-
-    public TypeScriptChunkStrategy(TSParser parser) {
-        this.parser = parser;
-    }
-
     @Override
     public List<ChunkedCode> chunk(File file) {
+        TSParser parser = new TSParser();
         byte[] code = FileUtil.getCodeBytes(file);
         TSLanguage typescript = new TreeSitterTypescript();
         parser.setLanguage(typescript);
